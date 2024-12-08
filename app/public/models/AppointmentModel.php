@@ -55,7 +55,7 @@ class Appointment extends BaseModel
         ]);
        }
        else { //if customer book appoinment directly
-        $query = "INSERT INTO appointments customer_name, email, phone, service_id, technician_id, appointment_date, appointment_status, created_at )
+        $query = "INSERT INTO appointments (customer_name, email, phone, service_id, technician_id, appointment_date, appointment_status, created_at )
         VALUE (:customer_name, :email, :phone, :service_id, :technician_id, :appointment_date, :appointment_status, :created_at)";
         $statement = self::$pdo -> prepare($query);
         $statement->execute([
