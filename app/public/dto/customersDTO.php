@@ -1,23 +1,25 @@
 <?php
 
 class CustomerDTO {
-    public readonly int $id;
-    public readonly string $name;
-    public readonly ?string $email;
-    public readonly ?string $phone;
-    public readonly ?string $password;
-    public readonly DateTime $created_at;
-     
-    //for customer with account and for customer without log in
-    public function __construct(int $id, string $name, ?string $email=null, ?string $phone=null, ?string $password=null, DateTime $created_at)
-    {
+    private int $id;
+    private UserDTO $user;
+    private DateTime $createdAt;
+
+    // Constructor
+    public function __construct(int $id, UserDTO $user, DateTime $createdAt) {
         $this->id = $id;
-        $this->name = $name;
-        $this->email = $email;
-        $this->phone = $phone;
-        $this->password = $password;
-        $this->created_at = $created_at;
+        $this->user = $user;
+        $this->createdAt = $createdAt;
     }
+
+    // Getters and Setters
+    public function getId(): int { return $this->id; }
+    public function getUser(): UserDTO { return $this->user; }
+    public function getCreatedAt(): DateTime { return $this->createdAt; }
+
+    public function setId(int $id): void { $this->id = $id; }
+    public function setUser(UserDTO $user): void { $this->user = $user; }
+    public function setCreatedAt(DateTime $createdAt): void { $this->createdAt = $createdAt; }
     
 }
 

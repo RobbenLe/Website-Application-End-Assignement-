@@ -1,6 +1,7 @@
 <?php
 
-enum AppointmentStatus: string {
+enum AppointmentStatus: string
+{
     case Pending = 'pending';
     case Confirmed = 'confirmed';
     case Completed = 'completed';
@@ -8,38 +9,39 @@ enum AppointmentStatus: string {
 }
 
 class AppointmentDTO {
-    public readonly int $id;
-    public readonly ?int $customer_id;
-    public readonly string $name;
-    public readonly ?string $email;
-    public readonly ?string $phone;
-    public readonly int $service_id;
-    public readonly int $technician_id;
-    public readonly DateTime $appointment_date;
-    public readonly AppointmentStatus $status;
-    public readonly DateTime $created_at;
+    private int $id;
+    private CustomerDTO $customer;
+    private TechnicianDTO $technician;
+    private ServiceDTO $service;
+    private DateTime $appointmentDate;
+    private string $appointmentStatus;  // e.g., 'pending', 'confirmed', 'completed', 'canceled'
+    private DateTime $createdAt;
 
-    public function __construct(
-        int $id,
-        ?int $customer_id=null,
-        string $name,
-        ?string $email=null,
-        ?string $phone=null,
-        int $service_id,
-        int $technician_id,
-        DateTime $appointment_date,
-        AppointmentStatus $status,
-        DateTime $created_at
-    ) {
+    // Constructor
+    public function __construct(int $id, CustomerDTO $customer, TechnicianDTO $technician, ServiceDTO $service, DateTime $appointmentDate, string $appointmentStatus, DateTime $createdAt) {
         $this->id = $id;
-        $this->customer_id = $customer_id;
-        $this->name = $name;
-        $this->email = $email;
-        $this->phone = $phone;
-        $this->service_id = $service_id;
-        $this->technician_id = $technician_id;
-        $this->appointment_date = $appointment_date;
-        $this->status = $status;
-        $this->created_at = $created_at;
+        $this->customer = $customer;
+        $this->technician = $technician;
+        $this->service = $service;
+        $this->appointmentDate = $appointmentDate;
+        $this->appointmentStatus = $appointmentStatus;
+        $this->createdAt = $createdAt;
     }
+
+    // Getters and Setters
+    public function getId(): int { return $this->id; }
+    public function getCustomer(): CustomerDTO { return $this->customer; }
+    public function getTechnician(): TechnicianDTO { return $this->technician; }
+    public function getService(): ServiceDTO { return $this->service; }
+    public function getAppointmentDate(): DateTime { return $this->appointmentDate; }
+    public function getAppointmentStatus(): string { return $this->appointmentStatus; }
+    public function getCreatedAt(): DateTime { return $this->createdAt; }
+
+    public function setId(int $id): void { $this->id = $id; }
+    public function setCustomer(CustomerDTO $customer): void { $this->customer = $customer; }
+    public function setTechnician(TechnicianDTO $technician): void { $this->technician = $technician; }
+    public function setService(ServiceDTO $service): void { $this->service = $service; }
+    public function setAppointmentDate(DateTime $appointmentDate): void { $this->appointmentDate = $appointmentDate; }
+    public function setAppointmentStatus(string $appointmentStatus): void { $this->appointmentStatus = $appointmentStatus; }
+    public function setCreatedAt(DateTime $createdAt): void { $this->createdAt = $createdAt; }
 }

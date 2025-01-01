@@ -20,10 +20,11 @@ require_once(__DIR__ . "/lib/Route.php");
 /**
  * Require routes
  */
-require_once(__DIR__ . "/routes/index.php");
-require_once(__DIR__ . "/routes/test.php");
+require_once(__DIR__ . "/routes/firstPage.php");
+require_once(__DIR__ . "/routes/LoginRoute.php"); 
+require_once(__DIR__ . "/routes/HomePageRoute.php");
 //require_once(__DIR__ . "/routes/user.php");
 //require_once(__DIR__ . "/routes/guest_book.php");
 
 // run router
-Route::run("/");
+Route::run();
