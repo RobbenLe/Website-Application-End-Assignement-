@@ -1,4 +1,6 @@
 <?php // this is my login routes
+require_once(__DIR__ . "/../controllers/UserController.php");
+
 Route::add('/LoginPage', function () {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userController = new UserController();

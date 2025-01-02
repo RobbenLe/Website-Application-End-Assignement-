@@ -1,4 +1,7 @@
-<?php  // this is my LoginPartial.
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +17,19 @@
 <body>
     <div class="login-container">
         <h1>Login</h1>
-        <form action="#" method="post">
+        
+        <!-- Display Error Message -->
+        <?php if (isset($_SESSION['login_error'])): ?>
+            <div class="error-message">
+                <?php 
+                    echo htmlspecialchars($_SESSION['login_error']); 
+                    unset($_SESSION['login_error']); // Clear the error after displaying it
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Login Form -->
+        <form action="/LoginPage" method="post">
             <div class="input-group">
                 <label for="username">User Name</label>
                 <input type="text" id="username" name="username" required />
@@ -28,7 +43,7 @@
             <button type="submit" class="login-btn">Login</button>
         </form>
         
-        <p class="register-text">Don't have an account? <a href="#">Register</a></p>
+        <p class="register-text">Don't have an account? <a href="/RegisterPage">Register</a></p>
     </div>
 </body>
 </html>
