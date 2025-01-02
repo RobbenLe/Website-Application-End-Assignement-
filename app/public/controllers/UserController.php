@@ -37,4 +37,5 @@ class UserController{
           echo "No user found with that username.";
       }
   }
+
 }

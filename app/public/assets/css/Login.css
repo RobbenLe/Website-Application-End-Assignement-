@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Open Sans", Arial, sans-serif;
-  background: linear-gradient(to bottom right, #ece9e6, #ffffff);
+  background: linear-gradient(to bottom right, #f4ef93, #ffffff);
   color: #333;
 }
 
@@ -10,7 +10,7 @@ body {
   width: 350px;
   margin: 80px auto;
   padding: 40px 30px;
-  background: #fff;
+  background: #ebeb81;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   text-align: center;

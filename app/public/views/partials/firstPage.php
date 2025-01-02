@@ -12,7 +12,8 @@
   <section class="navigationBar">
     <h1 class="logo">Rosa Nails & Spa</h1>
     <nav class="nav">
-      <button class="loginButton">Login/Register</button>
+      <!-- <button class="loginButton">Login/Register</button> -->
+      <a type="button" class="loginButton" href="/">Login/Register</a>
     </nav>
   </section>
 
