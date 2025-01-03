@@ -67,18 +67,22 @@ body {
 }
 
 .banner-button {
-  background-color: #e91e63;
-  color: #fff;
-  padding: 12px 24px;
+  display: inline-block;
+  background-color: #e91e63; /* Professional Yellow */
+  color: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
-  margin-top: 120px;
-  margin-right: 500px;
+  text-decoration: none; /* Remove underline */
+  transition: background-color 0.3s ease;
 }
+
 .banner-button:hover {
-  background-color: #c2185b;
+  background-color: #c2185b; /* Slightly darker yellow */
 }
 
 /* Introduction Section (same as body background) */
@@ -119,7 +123,7 @@ body {
 }
 
 /* Gallery/Services Section: slightly lighter than the nav bar,
-   but different from the main body so it stands out */
+     but different from the main body so it stands out */
 .gallery {
   text-align: center;
   padding: 40px 20px;

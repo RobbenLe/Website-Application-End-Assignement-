@@ -13,7 +13,7 @@
     <h1 class="logo">Rosa Nails & Spa</h1>
     <nav class="nav">
       <!-- <button class="loginButton">Login/Register</button> -->
-      <a type="button" class="loginButton" href="/">Login/Register</a>
+      <a type="button" class="loginButton" href="/LoginPage">Login/Register</a>
     </nav>
   </section>
 
@@ -27,7 +27,7 @@
       title="Welcome to Rosa Nails & Spa"
     />
     <div class="banner-text">
-      <button class="banner-button">Book an Appointment</button>
+      <a class="banner-button" href="/LoginPage">Book an Appointment</a>
     </div>
   </section>
 

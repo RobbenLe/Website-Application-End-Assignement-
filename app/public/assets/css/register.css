@@ -72,6 +72,7 @@ form {
 /* Input Group */
 .input-group {
   text-align: left;
+  margin-bottom: 10px;
 }
 
 /* Labels */
@@ -95,12 +96,17 @@ form {
   transition: border-color 0.3s ease;
 }
 
-/* Input Focus */
+/* Focus State */
 .input-group input:focus,
 .input-group select:focus {
   outline: none;
-  border-color: #ffca28; /* Highlight with yellow */
+  border-color: #ffca28; /* Yellow highlight */
   box-shadow: 0 0 5px rgba(255, 202, 40, 0.5);
+}
+
+/* Password Confirmation */
+.input-group #confirm_password {
+  background-color: #fffdf5; /* Slight yellow background for clarity */
 }
 
 /* ===== Submit Button ===== */
