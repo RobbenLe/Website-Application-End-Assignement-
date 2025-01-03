@@ -1,41 +1,61 @@
+<?php
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register - Rosa Nails & Spa</title>
-  <link rel="stylesheet" href="../../assets/css/register.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="../../assets/css/register.css">
 </head>
 <body>
-  <div class="register-container">
-    <h1 class="register-title">Create an Account</h1>
-    <p class="register-subtitle">Join us for a luxurious experience at Rosa Nails & Spa</p>
-    <form class="register-form">
-      <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="confirm-password">Confirm Password</label>
-        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
-      </div>
-      
-      <button type="submit" class="register-button">Register</button>
-    </form>
-    <p class="login-link">
-      Already have an account? <a href="/LoginPage">Login here</a>
-    </p>
-  </div>
+    <div class="register-container">
+        <h1>Register</h1>
+
+        <?php if (isset($_SESSION['register_error'])): ?>
+            <div class="error-message">
+                <?php 
+                    echo htmlspecialchars($_SESSION['register_error']);
+                    unset($_SESSION['register_error']); 
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="success-message">
+                <?php 
+                    echo htmlspecialchars($_SESSION['success_message']);
+                    unset($_SESSION['success_message']); 
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <form action="/Register" method="POST">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="input-group">
+                <label for="role">Role</label>
+                <select id="role" name="role">
+                    <option value="customer">Customer</option>
+                    <option value="technician">Technician</option>
+                </select>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
 </body>
 </html>

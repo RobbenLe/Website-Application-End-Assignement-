@@ -27,25 +27,17 @@ class UserController{
 
   public function login($username, $password) 
   {
-    try {
-        // Validate user credentials using the model's login method
-        $user = $this->userModel->login($username, $password);
-        
-        // Start a session if login is successful
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+    $user = $this->getUserByUsername($username);
 
-        // Store user details in session
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-        $_SESSION['is_logged_in'] = true;
-
-        return "Login successful! Welcome, " . $user['username'];
-    } catch (Exception $e) {
-        // Handle login failure
-        return "Login failed: " . $e->getMessage();
+    if ($user && password_verify($password, $user["password"])) {
+        return [
+            'id' => $user['id'],
+            'username' => $user['username'],
+            'email' => $user['email'],
+            'role' => $user['role'],
+        ];
+    } else {
+        throw new Exception("Invalid username or password.");
     }
   }
 
@@ -69,24 +61,38 @@ class UserController{
 
   public function processLogin($username, $password)
   {
-      try {
-          // Validate inputs
-          if (empty($username) || empty($password)) {
-              throw new Exception("Username and password are required.");
-          }
-  
-          // Authenticate the user
-          $user = $this->login($username, $password);
-  
-          // Redirect on successful login
-          header("Location: /Dashboard");
-          exit();
-      } catch (Exception $e) {
-          // Handle errors and redirect back with an error message
-          $_SESSION['login_error'] = $e->getMessage();
-          header("Location: /LoginPage");
-          exit();
-      }
+    try {
+        // Validate inputs
+        if (empty($username) || empty($password)) {
+            throw new Exception("Username and password are required.");
+        }
+
+        // Authenticate the user using the UserModel directly
+        $user = $this->userModel->login($username, $password);
+
+        // Start a session if login is successful
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Store user details in session
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['is_logged_in'] = true;
+
+        // Redirect to Dashboard
+        header("Location: /Dashboard");
+        exit();
+    } catch (Exception $e) {
+        // Handle errors and redirect back with an error message
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION['login_error'] = $e->getMessage();
+        header("Location: /LoginPage");
+        exit();
+    }
   }
 
 }

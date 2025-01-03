@@ -43,7 +43,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <button type="submit" class="login-btn">Login</button>
         </form>
         
-        <p class="register-text">Don't have an account? <a href="/RegisterPage">Register</a></p>
+        <p class="register-text">Don't have an account? <a href="/Register">Register</a></p>
     </div>
 </body>
 </html>
