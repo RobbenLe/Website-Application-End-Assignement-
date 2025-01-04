@@ -27,7 +27,9 @@
       title="Welcome to Rosa Nails & Spa"
     />
     <div class="banner-text">
-      <a class="banner-button" href="/LoginPage">Book an Appointment</a>
+    <button class="banner-button" onclick="window.location.href='/LoginPage';">
+     Book an Appointment
+   </button>
     </div>
   </section>
 
@@ -108,7 +110,6 @@
     <button class="category-btn" onclick="showCategory('manicure', this)">Manicure & Pedicure</button>
     <button class="category-btn" onclick="showCategory('gelpolish', this)">Gel Polish</button>
     <button class="category-btn" onclick="showCategory('biab', this)">Biab</button>
-    <button class="category-btn" onclick="showCategory('waxing', this)">Waxing</button>
   </nav>
 
   <!-- Acrylic Nails Category -->
@@ -173,5 +174,7 @@
     <p>Phone: (123) 456-7890 | Email: info@rosanailsandspa.com</p>
   </footer>
 
+  <!-- Switching Between Price List -->
+  <script src="../../assets/js/SwitchingPriceList.js"></script>
 </body>
 </html>

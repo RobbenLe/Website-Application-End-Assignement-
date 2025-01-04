@@ -37,7 +37,7 @@ body {
 /* Banner Section */
 .banner {
   position: relative;
-  text-align: center;
+  text-align: left;
   color: #fff;
 }
 
@@ -79,7 +79,8 @@ body {
   cursor: pointer;
   text-decoration: none; /* Remove underline */
   transition: background-color 0.3s ease;
-  margin-top: 500px;
+  margin-top: 120px;
+  margin-right: 510px;
 }
 
 .banner-button:hover {
@@ -244,6 +245,12 @@ body {
 .price-list li span {
   font-weight: bold;
   color: #a67c52;
+}
+
+.category-btn.active {
+  border-bottom: 2px solid #ffd700;
+  color: #000;
+  font-weight: bold;
 }
 
 /* Map Section */

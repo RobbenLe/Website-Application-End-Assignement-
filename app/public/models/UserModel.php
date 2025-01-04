@@ -11,9 +11,11 @@ require_once(__DIR__ . "/BaseModel.php");
     // Fetch user by username
     public function getUserByUsername($username)
    {
-    $stmt = self::$pdo->prepare("SELECT id, username, password, role FROM users WHERE username = :username");
-    $stmt->execute(["username" => $username]);  // Bind securely
-    return $stmt->fetch(PDO::FETCH_ASSOC);     // Fetch user data
+    $stmt = self::$pdo->prepare("SELECT id, username, email, password, role FROM users WHERE username = :username");
+    $stmt->bindParam(":username", $username);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC); // Fetch user data
    }
      
   /**
@@ -32,10 +34,8 @@ require_once(__DIR__ . "/BaseModel.php");
       $stmt->bindParam(":role", $role);
   
       if ($stmt->execute()) {
-           // Fetch and return the created user
-           $user_id = self::$pdo->lastInsertId();
-           $user =$this->getUserById($user_id);
-          return $user;
+           // Return the newly created user ID
+           return self::$pdo->lastInsertId();
       } else {
            throw new Exception("Failed to register user.");
       }
@@ -61,7 +61,9 @@ require_once(__DIR__ . "/BaseModel.php");
 
     public function getUserById($id) {
       $stmt = self::$pdo->prepare("SELECT id, username, email, role FROM users WHERE id = :id");
-      $stmt->execute(["id", $id]);
+      $stmt->bindParam(":id", $id);
+      $stmt->execute();
+
       return $stmt->fetch(PDO::FETCH_ASSOC);
     }
  }

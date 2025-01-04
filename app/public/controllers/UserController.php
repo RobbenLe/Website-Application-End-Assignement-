@@ -78,12 +78,26 @@ class UserController{
         // Store user details in session
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
+        $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['is_logged_in'] = true;
 
-        // Redirect to Dashboard
-        header("Location: /Dashboard");
-        exit();
+          // Role-based redirection
+          switch ($user['role']) {
+            case 'customer':
+                header("Location: /homePage");
+                break;
+            case 'technician':
+                header("Location: /TechnicianDashboard");
+                break;
+            case 'admin':
+                header("Location: /AdminDashboard");
+                break;
+            default:
+                header("Location: /LoginPage");
+                break;
+            }
+            exit();
     } catch (Exception $e) {
         // Handle errors and redirect back with an error message
         if (session_status() == PHP_SESSION_NONE) {

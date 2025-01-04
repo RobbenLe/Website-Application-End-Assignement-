@@ -25,6 +25,7 @@ require_once(__DIR__ . "/routes/LoginRoute.php");
 require_once(__DIR__ . "/routes/HomePageRoute.php");
 require_once(__DIR__ . "/routes/RegisterRoute.php");
 require_once(__DIR__ . "/routes/RegisterSuccess.php");
+require_once(__DIR__ . "/routes/BookingTreatments.php");
 //require_once(__DIR__ . "/routes/user.php");
 //require_once(__DIR__ . "/routes/guest_book.php");
 
