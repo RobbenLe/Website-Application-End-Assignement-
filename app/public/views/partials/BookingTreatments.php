@@ -1,5 +1,10 @@
 <?php
+// Ensure $services is passed from the Route
+if (!isset($services)) {
+    die("Services data is not available.");
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,60 +21,49 @@
     <aside class="service-sidebar">
       <h2>All Treatments</h2>
       <ul class="service-categories">
-        <li class="category active" onclick="showCategory('acrylic', event)">Artificial Nails (5)</li>
-        <li class="category" onclick="showCategory('manicure', event)">Manicure & Pedicure (2)</li>
-        <li class="category" onclick="showCategory('biab', event)">BIAB (2)</li>
-        <li class="category" onclick="showCategory('gelpolish', event)">Gel Polish (2)</li>
+        <?php foreach ($services as $category => $treatments): ?>
+          <li class="category" onclick="showCategory('<?php echo htmlspecialchars($category); ?>', event)">
+            <?php echo htmlspecialchars($category); ?> (<?php echo count($treatments); ?>)
+          </li>
+        <?php endforeach; ?>
       </ul>
     </aside>
 
     <!-- Main Content for Treatments -->
     <section class="service-details">
-      <div id="acrylic" class="service-category active">
-        <h3>Acrylic Nails</h3>
-        <ul>
+  <?php foreach ($services as $category => $treatments): ?>
+    <div id="<?php echo htmlspecialchars($category); ?>" class="service-category">
+      <h3><?php echo htmlspecialchars($category); ?></h3>
+      <ul>
+        <?php foreach ($treatments as $service): ?>
           <li>
-            <span>Acrylic nails - New set</span>
-            <span>50 min</span>
-            <span>€50</span>
-            <button class="select-btn" onclick="selectTreatment('Acrylic nails - New set', 50)">Kies</button>
-          </li>
-          <li>
-            <span>Acrylic nails - Filling</span>
-            <span>30 min</span>
-            <span>€35</span>
-            <button class="select-btn" onclick="selectTreatment('Acrylic nails - Filling', 35)">Kies</button>
-          </li>
-        </ul>
-      </div>
+            <span><?php echo htmlspecialchars($service['name'] ?? 'Unknown Service'); ?></span>
+            <span><?php echo htmlspecialchars($service['duration'] ?? '00:00:00'); ?></span>
+            <span>€<?php echo htmlspecialchars($service['price'] ?? '0.00'); ?></span>
+            <button class="select-btn" 
+    onclick="selectTreatment(
+        '<?php echo htmlspecialchars($service['id']); ?>', 
+        '<?php echo htmlspecialchars($service['name']); ?>', 
+        '<?php echo htmlspecialchars($service['duration']); ?>', 
+        '<?php echo htmlspecialchars($service['price']); ?>'
+    )">
+    Choose
+</button>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php endforeach; ?>
+</section>
 
-      <div id="manicure" class="service-category">
-        <h3>Manicure & Pedicure</h3>
-        <ul>
-          <li>
-            <span>Basic Manicure</span>
-            <span>30 min</span>
-            <span>€25</span>
-            <button class="select-btn" onclick="selectTreatment('Basic Manicure', 25)">Kies</button>
-          </li>
-          <li>
-            <span>Deluxe Pedicure</span>
-            <span>45 min</span>
-            <span>€45</span>
-            <button class="select-btn" onclick="selectTreatment('Deluxe Pedicure', 45)">Kies</button>
-          </li>
-        </ul>
-      </div>
-    </section>
   </div>
 
   <!-- Footer Popup for Time Selection -->
   <footer class="booking-footer" id="booking-footer">
     <p id="selected-treatment"></p>
-    <button class="time-btn">Choose Time</button>
+    <button class="time-btn"  onclick="window.location.href='/ChooseTimePage'">Choose Time</button>
   </footer>
 
-  <!-- JavaScript should be added just before closing </body> -->
   <script src="../../assets/js/BookingTreatments.js"></script>
+  <script src="../../assets/js/auth.js"></script>
 </body>
 </html>

@@ -1,0 +1,298 @@
+/* General Styles */
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  background-color: #fffaf0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.choose-time-container {
+  background-color: #fff;
+  width: 60%;
+  max-width: 800px;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1,
+h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #4c4c4c;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+/* Technician Selection */
+.technician-selection {
+  margin-bottom: 20px;
+}
+
+.technician-selection label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.technician-selection select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+}
+
+.technician-selection select:focus {
+  outline: none;
+  border-color: #ff6f61;
+}
+
+/* Date Selection */
+.date-selection {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.date-selection label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.date-selection input[type="date"] {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+}
+
+.date-selection input[type="date"]:focus {
+  outline: none;
+  border-color: #ff6f61;
+}
+
+/* Date Navigation */
+.date-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.date-navigation button {
+  background-color: #ff6f61;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  font-size: 1rem;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.date-navigation button:hover {
+  background-color: #d84315;
+}
+
+.date-navigation span {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Availability Slots */
+#availability-slots {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#availability-slots ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  justify-content: center;
+}
+
+#availability-slots li {
+  background: #ffebb7;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease-in-out;
+}
+
+#availability-slots li:hover {
+  background: #ffd54f;
+  font-weight: bold;
+}
+
+#availability-slots li.active {
+  background: #ff6f61;
+  color: white;
+  font-weight: bold;
+}
+
+/* Time Slot Buttons */
+.time-slot-btn {
+  background-color: #ffdd77;
+  padding: 8px 12px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  transition: background 0.3s ease-in-out;
+}
+
+.time-slot-btn:hover {
+  background-color: #ffc107;
+  font-weight: bold;
+}
+
+/* Appointment Summary */
+.appointment-summary {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.appointment-summary p {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+/* Confirm Appointment Button */
+#confirm-btn {
+  display: block;
+  width: 100%;
+  background-color: #ff6f61;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 20px;
+}
+
+#confirm-btn:hover {
+  background-color: #d84315;
+}
+
+/* Calendar Container */
+.calendar-container {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 20px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  background-color: #fdfdfd;
+}
+
+/* Time Slots List */
+#time-slots-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#time-slots {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#time-slots li {
+  background-color: #fdfdfd;
+  border: 1px solid #ccc;
+  margin: 5px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#time-slots li:hover {
+  background-color: #f0f8ff;
+  font-weight: bold;
+}
+
+#availability-slots li {
+  background-color: #ffebb7;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin: 5px;
+  text-align: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease-in-out;
+}
+
+#availability-slots li:hover {
+  background-color: #ffd54f;
+  font-weight: bold;
+}
+
+#availability-slots li.active {
+  background: #ff6f61;
+  color: white;
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .choose-time-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  #availability-slots ul {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+
+  .date-navigation button {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  #confirm-btn {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .date-navigation button {
+    padding: 5px 8px;
+  }
+}

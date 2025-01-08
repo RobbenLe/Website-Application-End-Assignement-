@@ -1,19 +1,52 @@
-// Switch between service categories
-function showCategory(categoryId) {
-  document
-    .querySelectorAll(".service-category")
-    .forEach((el) => el.classList.remove("active"));
-  document
-    .querySelectorAll(".category")
-    .forEach((el) => el.classList.remove("active"));
+// Highlight selected category
+function showCategory(categoryId, event) {
+  document.querySelectorAll(".service-category").forEach((category) => {
+    category.classList.remove("active");
+  });
+
+  document.querySelectorAll(".category").forEach((item) => {
+    item.classList.remove("active");
+  });
+
   document.getElementById(categoryId).classList.add("active");
   event.target.classList.add("active");
 }
 
-// Show footer popup when a treatment is selected
-function selectTreatment(treatment, price) {
-  const footer = document.getElementById("booking-footer");
+// Select a treatment and save to sessionStorage
+function selectTreatment(id, name, duration, price) {
+  const bookingFooter = document.getElementById("booking-footer");
   const selectedTreatment = document.getElementById("selected-treatment");
-  selectedTreatment.innerHTML = `1 treatment selected: ${treatment} (€${price})`;
-  footer.style.display = "flex";
+
+  selectedTreatment.innerText = `Selected Treatment: ${name} (${duration}) (€${price})`;
+  bookingFooter.style.display = "flex";
+
+  // Save to sessionStorage
+  let selectedTreatments =
+    JSON.parse(sessionStorage.getItem("selectedTreatments")) || [];
+
+  if (!selectedTreatments.some((treatment) => treatment.id === id)) {
+    selectedTreatments.push({ id, name, duration, price });
+    sessionStorage.setItem(
+      "selectedTreatments",
+      JSON.stringify(selectedTreatments)
+    );
+  }
+}
+
+// Navigate to ChooseTimePage
+function navigateToChooseTime() {
+  const selectedTreatments =
+    JSON.parse(sessionStorage.getItem("selectedTreatments")) || [];
+  const totalDuration = selectedTreatments.reduce(
+    (sum, t) => sum + parseInt(t.duration || 0),
+    0
+  );
+  sessionStorage.setItem("totalDuration", totalDuration);
+
+  if (selectedTreatments.length === 0) {
+    alert("Please select at least one treatment before proceeding.");
+    return;
+  }
+
+  window.location.href = "/ChooseTimePage";
 }

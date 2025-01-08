@@ -109,4 +109,37 @@ class UserController{
     }
   }
 
+  public function getAllTechnicians() {
+    try {
+        return $this->userModel->getAllTechnicians();
+    } catch (Exception $e) {
+        throw new Exception("Failed to fetch technicians: " . $e->getMessage());
+    }
+}
+
+  public function getTechnicianAvailabilityByDate($technicianId, $selectedDate) {
+    try {
+        // Fetch availability slots broken down into hourly intervals
+        $timeSlots = $this->userModel->getTechnicianAvailabilityByDate($technicianId, $selectedDate);
+
+        return $timeSlots;
+    } catch (Exception $e) {
+        throw new Exception("Failed to fetch technician availability: " . $e->getMessage());
+    }
+}
+
+//CURD of user 
+
+public function getAllUsers() {
+    return $this->userModel->getAllUsers();
+}
+
+public function updateUserRole($userId, $role) {
+    return $this->userModel->updateUserRole($userId, $role);
+}
+
+public function deleteUser($userId) {
+    return $this->userModel->deleteUser($userId);
+}
+
 }

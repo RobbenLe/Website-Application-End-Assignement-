@@ -13,18 +13,28 @@ class ServiceModel extends BaseModel
      * Fetch all services grouped by category
      */
     public function getAllServicesGroupedByCategory() 
-    {
-        $query = "SELECT 
-                    category, 
-                    name AS service_name, 
-                    price, 
-                    duration 
-                  FROM services 
-                  ORDER BY category ASC, name ASC";
-        $statement = self::$pdo->prepare($query);
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+{
+    $query = "SELECT 
+                id,
+                name, 
+                price, 
+                duration, 
+                category 
+              FROM services 
+              ORDER BY category ASC, name ASC";
+    $statement = self::$pdo->prepare($query);
+    $statement->execute();
+
+    $services = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    // Group services by category
+    $groupedServices = [];
+    foreach ($services as $service) {
+        $groupedServices[$service['category']][] = $service;
     }
+
+    return $groupedServices;
+}
 
     /**
      * Fetch services by category

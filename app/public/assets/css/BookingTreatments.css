@@ -1,54 +1,70 @@
-/* General Styling */
+/* ===== Global Styles ===== */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Arial", sans-serif;
+  background-color: #fffaf0; /* Light creamy background */
 }
 
-/* Booking Container */
+/* ===== Booking Container ===== */
 .booking-container {
   display: flex;
+  flex-wrap: wrap;
   min-height: 100vh;
 }
 
-/* Sidebar */
+/* ===== Sidebar Styling ===== */
 .service-sidebar {
-  background-color: #f8f9fa;
+  background-color: #ffebb7; /* Soft Yellow */
   width: 25%;
+  min-width: 250px;
   padding: 20px;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #e0c785;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .service-sidebar h2 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #4c4c4c;
 }
 
 .service-categories {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .service-categories .category {
-  padding: 10px;
+  background-color: #fff8e1;
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  border-radius: 5px;
   cursor: pointer;
-  border-radius: 4px;
-  margin-bottom: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .service-categories .category:hover,
 .service-categories .category.active {
-  background-color: #e3f2fd;
-  font-weight: bold;
+  background-color: #ffc107; /* Highlight Active */
+  color: #333;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Service Details */
+/* ===== Service Details Section ===== */
 .service-details {
   flex: 1;
   padding: 20px;
+  overflow-y: auto;
+  background-color: #ffffff;
 }
 
 .service-category {
   display: none;
+  margin-bottom: 30px;
 }
 
 .service-category.active {
@@ -57,63 +73,149 @@ body {
 
 .service-category h3 {
   font-size: 1.5rem;
-  margin-bottom: 10px;
+  color: #444;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #ffd54f;
+  padding-bottom: 5px;
 }
 
+/* Service List Styling */
 .service-category ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .service-category li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding: 10px 0;
+  padding: 15px 10px;
+  margin-bottom: 10px;
+  background: #fff8e1;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
 }
 
+.service-category li:hover {
+  transform: scale(1.02);
+  background-color: #ffe082;
+}
+
+/* Service Details (Text) */
 .service-category li span {
+  font-size: 0.95rem;
   flex: 1;
+  text-align: left;
+  padding-right: 10px;
+  color: #555;
 }
 
+/* Action Button */
 .service-category .select-btn {
-  background-color: #ff6f61;
-  color: white;
+  background-color: #ff6f61; /* Professional Coral */
+  color: #fff;
+  font-size: 0.9rem;
   border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
+  border-radius: 5px;
+  padding: 8px 12px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .service-category .select-btn:hover {
-  background-color: #e64a45;
+  background-color: #d84315;
 }
 
-/* Footer Popup */
+/* ===== Footer Popup for Selection ===== */
 .booking-footer {
   display: none;
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #ff6f61;
-  color: white;
+  background: #ffc107;
+  color: #4c4c4c;
   text-align: center;
   padding: 10px;
   font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .booking-footer p {
   margin: 0;
+  font-size: 1.1rem;
 }
 
 .booking-footer .time-btn {
-  margin-top: 10px;
-  background-color: #fff;
-  color: #ff6f61;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
+  margin-top: 5px;
+  background-color: #ffffff;
+  color: #ffc107;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #ffd54f;
+  padding: 8px 15px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.booking-footer .time-btn:hover {
+  background-color: #ffe082;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 992px) {
+  .service-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0c785;
+  }
+
+  .service-details {
+    width: 100%;
+  }
+
+  .service-category li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .service-category li span {
+    margin-bottom: 5px;
+  }
+
+  .service-category .select-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .service-sidebar h2 {
+    font-size: 1.5rem;
+  }
+
+  .service-category h3 {
+    font-size: 1.2rem;
+  }
+
+  .service-category li {
+    padding: 10px;
+  }
+
+  .service-category .select-btn {
+    font-size: 0.8rem;
+  }
+
+  .booking-footer {
+    font-size: 0.9rem;
+  }
+
+  .booking-footer .time-btn {
+    font-size: 0.8rem;
+  }
 }

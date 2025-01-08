@@ -13,7 +13,7 @@ if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
 // Access session variables
 $username = $_SESSION['username'];
 $role = $_SESSION['role'];
-$email = $_SESSION['email'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

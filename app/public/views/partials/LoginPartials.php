@@ -45,5 +45,8 @@ if (session_status() === PHP_SESSION_NONE) {
         
         <p class="register-text">Don't have an account? <a href="/Register">Register</a></p>
     </div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="../../assets/js/login.js"></script>
 </body>
 </html>
