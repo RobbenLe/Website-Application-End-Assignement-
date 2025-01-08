@@ -166,7 +166,7 @@ Route::add('/createAppointment', function () {
         ]);
     }
 });
-    
+
 
 
 
