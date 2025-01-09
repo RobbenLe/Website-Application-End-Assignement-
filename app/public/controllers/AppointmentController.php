@@ -140,17 +140,16 @@ public function getSuggestedTimeSlots($technicianId, $date, $duration) {
     /**
      * Get appointments for a customer
      */
-    public function getCustomerAppointments($customer_id)
-    {
-        return $this->appointmentModel->getAppointmentsByCustomerId($customer_id);
-    }
-
     /**
-     * Get appointments for a technician
+     * Get All Appointments
      */
-    public function getTechnicianAppointments($technician_id)
+    public function getAllAppointments()
     {
-        return $this->appointmentModel->getAppointmentsByTechnicianId($technician_id);
+        try {
+            return $this->appointmentModel->getAllAppointments();
+        } catch (Exception $e) {
+            throw new Exception("Failed to fetch appointments: " . $e->getMessage());
+        }
     }
 
     /**

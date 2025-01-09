@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
               window.location.href = "/TechnicianDashboard";
               break;
             case "admin":
-              window.location.href = "/AdminDashboardPage";
+              window.location.href = "/AdminDashBoardPage";
               break;
             default:
               window.location.href = "/LoginPage";

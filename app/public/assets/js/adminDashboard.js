@@ -1,34 +1,237 @@
-// Fetch and Populate Tables
-async function loadData() {
-  let response = await fetch("/api/getTechnicians");
-  let technicians = await response.json();
-  document.getElementById("technician-table").innerHTML = technicians
+// Load Admin Dashboard Data
+async function loadAdminDashboardData() {
+  console.log("Fetching admin dashboard data...");
+  const response = await fetch("/api/getAdminDashboardData");
+  const data = await response.json();
+  console.log("Data received:", data);
+
+  if (data.success) {
+    populateTechnicianTable(data.technicians);
+    populateServiceTable(data.services);
+    populateAppointmentTable(data.appointments);
+  } else {
+    alert("Error loading dashboard data: " + data.message);
+  }
+}
+
+// Populate Technician Table
+function populateTechnicianTable(technicians) {
+  const technicianTable = document.getElementById("technician-table");
+  if (technicians.length === 0) {
+    technicianTable.innerHTML = `<tr><td colspan="4">No technicians found</td></tr>`;
+    return;
+  }
+
+  technicianTable.innerHTML = technicians
     .map(
-      (t) => `
-      <tr>
-        <td>${t.id}</td>
-        <td>${t.username}</td>
-        <td>${t.email}</td>
-        <td><button>Delete</button></td>
-      </tr>
-    `
+      (tech) => `
+          <tr>
+            <td>${tech.technician_id}</td>
+            <td>${tech.technician_name}</td>
+            <td>${tech.email}</td>
+            <td>
+              <button onclick='openEditTechnicianModal(${JSON.stringify(
+                tech
+              )})'>Edit</button>
+               <button onclick='deleteTechnician(${
+                 tech.technician_id
+               })'>Delete</button>
+            </td>
+          </tr>
+        `
     )
     .join("");
 }
 
-// Show Technician Modal
+// Populate Service Table
+function populateServiceTable(groupedServices) {
+  const serviceTable = document.getElementById("service-table");
+  serviceTable.innerHTML = ""; // Clear existing table content
+
+  if (Object.keys(groupedServices).length === 0) {
+    serviceTable.innerHTML = `<tr><td colspan="6">No services found</td></tr>`;
+    return;
+  }
+
+  for (const [category, services] of Object.entries(groupedServices)) {
+    // Add a row for the category
+    serviceTable.innerHTML += `
+        <tr>
+          <td colspan="6" style="font-weight: bold; background-color: #f9f9f9;">${category}</td>
+        </tr>
+      `;
+
+    // Add rows for services under the category
+    services.forEach((service) => {
+      serviceTable.innerHTML += `
+          <tr>
+            <td>${service.id}</td>
+            <td>${service.name}</td>
+            <td>${service.category}</td>
+            <td>${service.price}</td>
+            <td>${service.duration}</td>
+            <td>
+              <button onclick="editService(${service.id})">Edit</button>
+              <button onclick="deleteService(${service.id})">Delete</button>
+            </td>
+          </tr>
+        `;
+    });
+  }
+}
+
+// Populate Appointment Table
+function populateAppointmentTable(appointments) {
+  const appointmentTable = document.getElementById("appointment-table");
+  if (appointments.length === 0) {
+    appointmentTable.innerHTML = `<tr><td colspan="6">No appointments found</td></tr>`;
+    return;
+  }
+  appointmentTable.innerHTML = appointments
+    .map(
+      (appt) => `
+          <tr>
+            <td>${appt.appointment_id}</td>
+            <td>${appt.customer_name}</td>
+            <td>${appt.technician_name}</td>
+            <td>${appt.appointment_date}</td>
+            <td>${appt.appointment_start_time} - ${appt.appointment_end_time}</td>
+            <td>
+              <button onclick="editAppointment(${appt.appointment_id})">Edit</button>
+              <button onclick="deleteAppointment(${appt.appointment_id})">Delete</button>
+            </td>
+          </tr>
+        `
+    )
+    .join("");
+}
+
+//////////////////////////////////////////////////////
+
 function showTechnicianForm() {
   document.getElementById("technician-modal").style.display = "flex";
 }
 
-// Submit Technician
+// Submit Technician Form
 document
   .getElementById("technician-form")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
-    await fetch("/api/addTechnician", {
-      method: "POST",
-      body: JSON.stringify({ username: "tech1" }),
-    });
-    loadData();
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const username = document.getElementById("tech-name").value;
+    const email = document.getElementById("tech-email").value;
+    const password = document.getElementById("tech-password").value;
+
+    try {
+      const response = await fetch("/api/createTechnician", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Technician created successfully!");
+        loadAdminDashboardData(); // Reload dashboard data
+      } else {
+        alert("Error: " + result.message);
+      }
+    } catch (error) {
+      alert("An error occurred while creating the technician.");
+      console.error("Error:", error);
+    }
   });
+
+///////////////////////////////////////////// Edit Technician
+
+// Open the Edit Technician Modal
+function openEditTechnicianModal(technician) {
+  document.getElementById("edit-tech-id").value = technician.technician_id;
+  document.getElementById("edit-tech-username").value =
+    technician.technician_name;
+  document.getElementById("edit-tech-email").value = technician.email;
+  document.getElementById("edit-tech-password").value = ""; // Leave password blank
+
+  document.getElementById("edit-technician-modal").style.display = "flex";
+}
+
+// Close the Edit Technician Modal
+function closeEditTechnicianModal() {
+  document.getElementById("edit-technician-modal").style.display = "none";
+}
+
+// Submit the Edit Technician Form
+document
+  .getElementById("edit-technician-form")
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const id = document.getElementById("edit-tech-id").value;
+    const username = document.getElementById("edit-tech-username").value;
+    const email = document.getElementById("edit-tech-email").value;
+    const password = document.getElementById("edit-tech-password").value;
+
+    // Prepare payload with only fields that have values
+    const payload = { id };
+    if (username) payload.username = username;
+    if (email) payload.email = email;
+    if (password) payload.password = password;
+
+    try {
+      const response = await fetch("/api/updateTechnician", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Technician updated successfully!");
+        loadAdminDashboardData(); // Reload dashboard data
+        closeEditTechnicianModal(); // Close the modal
+      } else {
+        alert("Failed to update technician: " + result.message);
+      }
+    } catch (error) {
+      alert("An error occurred while updating the technician.");
+      console.error("Error:", error);
+    }
+  });
+
+// Delete Technician
+async function deleteTechnician(technicianId) {
+  if (!confirm("Are you sure you want to delete this technician?")) {
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/deleteTechnician", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: technicianId }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert("Technician deleted successfully!");
+      loadAdminDashboardData(); // Reload dashboard data
+    } else {
+      alert("Failed to delete technician: " + result.message);
+    }
+  } catch (error) {
+    alert("An error occurred while deleting the technician.");
+    console.error("Error:", error);
+  }
+}
+
+// Call this function when the admin dashboard loads
+document.addEventListener("DOMContentLoaded", loadAdminDashboardData);

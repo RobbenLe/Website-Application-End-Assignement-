@@ -88,7 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
   displaySelectedDate();
 });
 
-// Confirm Appointment
+// Confirm AnnF c          {
+// " k
 function confirmAppointment() {
   const technicianId = document.getElementById("technician").value;
   const selectedDate = document.getElementById("selected-date").value;
@@ -140,13 +141,15 @@ function confirmAppointment() {
     body: JSON.stringify(appointmentData),
   })
     .then(async (response) => {
-      console.log("🔄 Response Status:", response.status);
-
+      console.log(
+        "🔄 Response Status from creating an appointment:",
+        await response
+      );
       if (!response.ok) {
         const errorText = await response.text(); // Get response text
         console.error("❌ Raw Response:", errorText);
         throw new Error(
-          `HTTP Error: ${response.status} - ${response.statusText}\nDetails: ${errorText}`
+          `HTTP Error: ${await response.status} - ${await response.statusText}\nDetails: ${errorText}`
         );
       }
 
@@ -177,7 +180,6 @@ function confirmAppointment() {
       } else if (error.message) {
         errorMessage = error.message;
       }
-
       alert(`🚨 Appointment Error:\n${errorMessage}`);
     });
 }

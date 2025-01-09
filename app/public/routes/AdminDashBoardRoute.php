@@ -1,139 +1,226 @@
 <?php
 require_once(__DIR__ . "/../controllers/ServiceController.php");
 require_once(__DIR__ . "/../controllers/UserController.php");
+require_once(__DIR__ . "/../controllers/AppointmentController.php");
 
 // ✅ Start session safely
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ✅ Route to Display the Admin Dashboard Page
-Route::add('/AdminDashboard', function () {
-    if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-        require_once(__DIR__ . "/../views/pages/AdminDashboardPage.php");
-    } else {
-        header('Location: /LoginPage');
+Route::add('/AdminDashBoardPage', function () {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $userController = new UserController(); // Ensure this is instantiated correctly
+
+        $formType = $_POST['form-type'] ?? ''; // Identify the form type
+
+        try {
+            switch ($formType) {
+                case 'create-technician':
+                    // Validate input
+                    if (empty($_POST['tech-username']) || empty($_POST['tech-email']) || empty($_POST['tech-password'])) {
+                        throw new Exception("All fields are required to create a technician.");
+                    }
+
+                    // Call the UserController to create the technician
+                    $userController->register(
+                        $_POST['tech-email'],
+                        $_POST['tech-username'],
+                        $_POST['tech-password'],
+                        'technician'
+                    );
+
+                    $_SESSION['success_message'] = "Technician created successfully!";
+                    break;
+
+                // Handle other form types
+                default:
+                    throw new Exception("Invalid form type.");
+            }
+        } catch (Exception $e) {
+            $_SESSION['error_message'] = $e->getMessage();
+            error_log("Error in Admin Dashboard Page: " . $e->getMessage());
+        }
+
+        // Redirect to the admin dashboard
+        header('Location: /AdminDashBoardPage');
         exit();
     }
+
+    require_once(__DIR__ . "/../views/pages/AdminDashboardPage.php");
 });
 
-// -------------------- USER ROUTES --------------------
-
-// ✅ Route to Fetch All Users (For Admin)
-Route::add('/api/getUsers', function () {
+//create Technician
+Route::add('/api/createTechnician', function () {
     header('Content-Type: application/json');
-    $userController = new UserController();
-    try {
-        echo json_encode($userController->getAllUsers());
-    } catch (Exception $e) {
-        echo json_encode(["success" => false, "message" => $e->getMessage()]);
-    }
-});
 
-// ✅ Route to Update User Role
-Route::add('/api/updateUserRole', function () {
-    header('Content-Type: application/json');
+    // Instantiate UserController
     $userController = new UserController();
+
+    // Parse JSON input
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['id'], $data['role'])) {
-        echo json_encode(["success" => false, "message" => "Missing required parameters"]);
+    try {
+        // Validate input
+        if (!isset($data['username'], $data['email'], $data['password'])) {
+            throw new Exception("All fields (username, email, password) are required.");
+        }
+
+        // Call UserController to create the technician
+        $result = $userController->createTechnician(
+            $data['username'],
+            $data['email'],
+            $data['password']
+        );
+
+        // Return success response
+        echo json_encode(["success" => true, "message" => $result['message'], "technician_id" => $result['id']]);
+    } catch (Exception $e) {
+        // Return error response
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
+    }
+}, ["post"]);
+
+
+//Update Technician
+Route::add('/api/updateTechnician', function () {
+    header('Content-Type: application/json');
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (empty($data['id'])) {
+        echo json_encode(["success" => false, "message" => "Technician ID is required"]);
         exit();
     }
 
     try {
-        $result = $userController->updateUserRole($data['id'], $data['role']);
-        echo json_encode(["success" => true, "message" => "User role updated"]);
+        $userController = new UserController();
+        $result = $userController->updateTechnician(
+            $data['id'],
+            $data['username'] ?? null, // Optional
+            $data['email'] ?? null,    // Optional
+            $data['password'] ?? null  // Optional
+        );
+        echo json_encode(["success" => true, "message" => "Technician updated successfully"]);
     } catch (Exception $e) {
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 }, ["post"]);
 
-// ✅ Route to Delete a User
-Route::add('/api/deleteUser', function () {
+
+
+
+// ✅ Route to Delete a Technician
+Route::add('/api/deleteTechnician', function () {
     header('Content-Type: application/json');
-    $userController = new UserController();
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (!isset($data['id'])) {
-        echo json_encode(["success" => false, "message" => "Missing required parameters"]);
+        echo json_encode(["success" => false, "message" => "Technician ID is required."]);
         exit();
     }
 
     try {
-        $userController->deleteUser($data['id']);
-        echo json_encode(["success" => true, "message" => "User deleted"]);
+        $userController = new UserController();
+        $response = $userController->deleteTechnician($data['id']);
+        echo json_encode(["success" => true, "message" => $response['message']]);
     } catch (Exception $e) {
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 }, ["post"]);
 
-// -------------------- SERVICE ROUTES --------------------
 
-// ✅ Route to Fetch All Services
-Route::add('/api/getServices', function () {
+
+
+// ✅ Consolidated Route to Fetch All Admin Dashboard Data
+Route::add('/api/getAdminDashboardData', function () {
     header('Content-Type: application/json');
+
+    $userController = new UserController();
     $serviceController = new ServiceController();
+    $appointmentController = new AppointmentController();
+
     try {
-        echo json_encode($serviceController->getAllServices());
+        echo json_encode([
+            "success" => true,
+            "technicians" => $userController->getAllTechnicians(),
+            "services" => $serviceController->getAllServices(),
+            "appointments" => $appointmentController->getAllAppointments(),
+        ]);
     } catch (Exception $e) {
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 });
 
-// ✅ Route to Add a New Service
+
+// ✅ Route to Fetch All Technicians
+Route::add('/api/getTechnicians', function () {
+    header('Content-Type: application/json');
+    $userController = new UserController();
+
+    try {
+        $technicians = $userController->getAllTechnicians();
+        echo json_encode(["success" => true, "technicians" => $technicians]);
+    } catch (Exception $e) {
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
+    }
+});
+
+// ✅ Service Management Routes
 Route::add('/api/addService', function () {
     header('Content-Type: application/json');
     $serviceController = new ServiceController();
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['name'], $data['category'], $data['price'], $data['duration'])) {
-        echo json_encode(["success" => false, "message" => "Missing required parameters"]);
-        exit();
-    }
-
     try {
-        $serviceController->addService($data['name'], $data['category'], $data['price'], $data['duration']);
-        echo json_encode(["success" => true, "message" => "Service added successfully"]);
+        if (isset($data['name'], $data['category'], $data['price'], $data['duration'])) {
+            $serviceController->addService($data['name'], $data['category'], $data['price'], $data['duration']);
+            echo json_encode(["success" => true, "message" => "Service added successfully"]);
+        } else {
+            throw new Exception("Missing required parameters");
+        }
     } catch (Exception $e) {
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 }, ["post"]);
 
-// ✅ Route to Update a Service
 Route::add('/api/updateService', function () {
     header('Content-Type: application/json');
     $serviceController = new ServiceController();
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['id'], $data['name'], $data['category'], $data['price'], $data['duration'])) {
-        echo json_encode(["success" => false, "message" => "Missing required parameters"]);
-        exit();
-    }
-
     try {
-        $serviceController->updateService($data['id'], $data['name'], $data['category'], $data['price'], $data['duration']);
-        echo json_encode(["success" => true, "message" => "Service updated successfully"]);
+        if (isset($data['id'], $data['name'], $data['category'], $data['price'], $data['duration'])) {
+            $serviceController->updateService(
+                $data['id'],
+                $data['name'],
+                $data['category'],
+                $data['price'],
+                $data['duration']
+            );
+            echo json_encode(["success" => true, "message" => "Service updated successfully"]);
+        } else {
+            throw new Exception("Missing required parameters");
+        }
     } catch (Exception $e) {
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 }, ["post"]);
 
-// ✅ Route to Delete a Service
 Route::add('/api/deleteService', function () {
     header('Content-Type: application/json');
     $serviceController = new ServiceController();
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['id'])) {
-        echo json_encode(["success" => false, "message" => "Missing required parameters"]);
-        exit();
-    }
-
     try {
-        $serviceController->deleteService($data['id']);
-        echo json_encode(["success" => true, "message" => "Service deleted successfully"]);
+        if (isset($data['id'])) {
+            $serviceController->deleteService($data['id']);
+            echo json_encode(["success" => true, "message" => "Service deleted successfully"]);
+        } else {
+            throw new Exception("Missing required parameters");
+        }
     } catch (Exception $e) {
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 }, ["post"]);
+
+?>

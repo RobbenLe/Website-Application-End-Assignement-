@@ -18,10 +18,16 @@ class UserController{
   public function register($email, $username, $password, $role = 'customer') 
   {
     try {
-        $this->userModel->register($email, $username, $password, $role);
-        return "User successfully registered!";
+        // Call the createTechnician method if role is technician
+        if ($role === 'technician') {
+            return $this->userModel->createTechnician($username, $email, $password);
+        }
+
+        // Handle other roles if necessary
+        return $this->userModel->register($email, $username, $password, $role);
     } catch (Exception $e) {
-        return "Registration failed: " . $e->getMessage();
+        error_log("Error in register: " . $e->getMessage());
+        throw new Exception("Failed to register user.");
     }
   }
 
@@ -134,12 +140,47 @@ public function getAllUsers() {
     return $this->userModel->getAllUsers();
 }
 
-public function updateUserRole($userId, $role) {
-    return $this->userModel->updateUserRole($userId, $role);
+
+/**
+ * Create New Technician
+ */
+public function createTechnician($username, $email, $password) {
+    try {
+        if (empty($username) || empty($email) || empty($password)) {
+            throw new Exception("All fields are required to create a technician.");
+        }
+
+        $technicianId = $this->userModel->createTechnician($username, $email, $password);
+        return ["success" => true, "message" => "Technician created successfully.", "id" => $technicianId];
+    } catch (Exception $e) {
+        return ["success" => false, "message" => $e->getMessage()];
+    }
 }
 
-public function deleteUser($userId) {
-    return $this->userModel->deleteUser($userId);
+/**
+ * Update Technician
+ */
+public function updateTechnician($technicianId, $username = null, $email = null, $password = null) {
+    try {
+        return $this->userModel->updateTechnician($technicianId, $username, $email, $password);
+    } catch (Exception $e) {
+        throw new Exception("Failed to update technician: " . $e->getMessage());
+    }
+}
+
+/**
+ * Delete Technician
+ */
+public function deleteTechnician($userId) {
+    try {
+        $result = $this->userModel->deleteUser($userId); // Ensure `deleteUser` is implemented to include the `role` condition
+        if ($result === 0) {
+            throw new Exception("Failed to delete technician. Technician may not exist or is not a technician.");
+        }
+        return ["success" => true, "message" => "Technician deleted successfully."];
+    } catch (Exception $e) {
+        throw new Exception("Error deleting technician: " . $e->getMessage());
+    }
 }
 
 }

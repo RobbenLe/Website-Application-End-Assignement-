@@ -151,36 +151,41 @@ public function isTimeSlotAvailable($technicianId, $selectedDate, $startTime, $e
     }
 
     /**
-     * Get all appointments for a specific customer
+     * Get All Appointments
+     * Fetches all appointments with customer and technician names.
      */
-    public function getAppointmentsByCustomerId($customer_id) 
+    public function getAllAppointments()
     {
-        $query = "SELECT * FROM appointments WHERE customer_id = :customer_id ORDER BY appointment_date DESC";
-        $stmt = self::$pdo->prepare($query);
-        $stmt->execute(['customer_id' => $customer_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+        $query = "
+            SELECT 
+                a.id AS appointment_id,
+                c.username AS customer_name,
+                t.username AS technician_name,
+                a.appointment_date,
+                a.appointment_start_time,
+                a.appointment_end_time,
+                a.appointment_status,
+                GROUP_CONCAT(s.name SEPARATOR ', ') AS services
+            FROM 
+                appointments a
+            LEFT JOIN 
+                users c ON a.customer_id = c.id AND c.role = 'customer'
+            LEFT JOIN 
+                users t ON a.technician_id = t.id AND t.role = 'technician'
+            LEFT JOIN 
+                appointment_services asg ON a.id = asg.appointment_id
+            LEFT JOIN 
+                services s ON asg.service_id = s.id
+            GROUP BY 
+                a.id
+            ORDER BY 
+                a.appointment_date ASC, a.appointment_start_time ASC
+        ";
 
-    /**
-     * Get all appointments for a specific technician
-     */
-    public function getAppointmentsByTechnicianId($technician_id) 
-    {
-        $query = "SELECT * FROM appointments WHERE technician_id = :technician_id ORDER BY appointment_date ASC";
         $stmt = self::$pdo->prepare($query);
-        $stmt->execute(['technician_id' => $technician_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+        $stmt->execute();
 
-    /**
-     * Get details of a specific appointment by ID
-     */
-    public function getAppointmentById($appointment_id) 
-    {
-        $query = "SELECT * FROM appointments WHERE id = :appointment_id";
-        $stmt = self::$pdo->prepare($query);
-        $stmt->execute(['appointment_id' => $appointment_id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**

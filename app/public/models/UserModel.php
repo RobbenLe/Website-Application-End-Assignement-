@@ -7,6 +7,8 @@ class UserModel extends BaseModel
     public function __construct() {
         parent::__construct();
     }
+
+    
     
     // Fetch user by username
     public function getUserByUsername($username)
@@ -63,16 +65,17 @@ class UserModel extends BaseModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAllTechnicians() {
-      $query = "SELECT id AS technician_id, username AS technician_name 
-                FROM users 
-                WHERE role = 'technician'";
-  
-      $stmt = self::$pdo->prepare($query);
-      $stmt->execute();
-  
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
-  }
+    public function getAllTechnicians()
+   {
+    $query = "SELECT id AS technician_id, username AS technician_name, email 
+              FROM users 
+              WHERE role = 'technician'";
+    
+    $stmt = self::$pdo->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // Get Technician Availability by Date
     public function getTechnicianAvailabilityByDate($technicianId, $selectedDate) {
@@ -109,37 +112,10 @@ class UserModel extends BaseModel
         }
 
         return $timeSlots;
-    }
-
-  
+    } 
 
     //CURD of User
     // UserModel.php
-
-/**
- * Update User Role
- */
-public function updateUserRole($userId, $newRole) {
-  $query = "UPDATE users SET role = :role WHERE id = :id";
-  $statement = self::$pdo->prepare($query);
-  $statement->execute([
-      "id" => $userId,
-      "role" => $newRole
-  ]);
-  return $statement->rowCount();
-}
-
-/**
-* Delete User
-*/
-public function deleteUser($userId) {
-  $query = "DELETE FROM users WHERE id = :id";
-  $statement = self::$pdo->prepare($query);
-  $statement->execute([
-      "id" => $userId
-  ]);
-  return $statement->rowCount();
-}
 
 /**
 * Fetch All Users
@@ -150,5 +126,70 @@ public function getAllUsers() {
   $statement->execute();
   return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
+ /**
+ * Create New Technician
+ */
+public function createTechnician($username, $email, $password) {
+    $query = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, 'technician')";
+
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+    try {
+        $statement = self::$pdo->prepare($query);
+        $statement->execute([
+            "username" => $username,
+            "email" => $email,
+            "password" => $hashedPassword
+        ]);
+
+        return self::$pdo->lastInsertId();
+    } catch (Exception $e) {
+        error_log("❌ Error creating technician: " . $e->getMessage());
+        throw new Exception("Failed to create technician.");
+    }
+}
+
+
+/**
+ * Update Technician
+ */
+public function updateTechnician($id, $username = null, $email = null, $password = null) {
+    $fieldsToUpdate = [];
+    $params = ['id' => $id];
+
+    if ($username !== null) {
+        $fieldsToUpdate[] = "username = :username";
+        $params['username'] = $username;
+    }
+    if ($email !== null) {
+        $fieldsToUpdate[] = "email = :email";
+        $params['email'] = $email;
+    }
+    if ($password !== null) {
+        $fieldsToUpdate[] = "password = :password";
+        $params['password'] = password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    if (empty($fieldsToUpdate)) {
+        throw new Exception("No fields to update.");
+    }
+
+    $query = "UPDATE users SET " . implode(', ', $fieldsToUpdate) . " WHERE id = :id";
+    $stmt = self::$pdo->prepare($query);
+    $stmt->execute($params);
+
+    return $stmt->rowCount();
+}
+
+/**
+ * Update Technician
+ */
+public function deleteUser($userId) {
+    $query = "DELETE FROM users WHERE id = :id AND role = 'technician'";
+    $statement = self::$pdo->prepare($query);
+    $statement->execute(["id" => $userId]);
+    return $statement->rowCount();
+}
+
 
 }
