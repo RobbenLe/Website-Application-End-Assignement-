@@ -183,29 +183,6 @@ Route::add('/api/addService', function () {
     }
 }, ["post"]);
 
-Route::add('/api/updateService', function () {
-    header('Content-Type: application/json');
-    $serviceController = new ServiceController();
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    try {
-        if (isset($data['id'], $data['name'], $data['category'], $data['price'], $data['duration'])) {
-            $serviceController->updateService(
-                $data['id'],
-                $data['name'],
-                $data['category'],
-                $data['price'],
-                $data['duration']
-            );
-            echo json_encode(["success" => true, "message" => "Service updated successfully"]);
-        } else {
-            throw new Exception("Missing required parameters");
-        }
-    } catch (Exception $e) {
-        echo json_encode(["success" => false, "message" => $e->getMessage()]);
-    }
-}, ["post"]);
-
 //get categories from the service
 Route::add('/api/getCategories', function () {
     header('Content-Type: application/json');
@@ -285,6 +262,31 @@ Route::add('/api/deleteService', function () {
     }
 }, ["post"]);
 
+
+// Update Service
+Route::add('/api/updateService', function () {
+    header('Content-Type: application/json');
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $id = $data['id'];
+    $name = $data['name'];
+    $category = $data['category'];
+    $price = $data['price'];
+    $duration = $data['duration'];
+
+    try {
+        $serviceController = new ServiceController();
+        $result = $serviceController->updateService($id, $name, $category, $price, $duration);
+
+        if ($result > 0) {
+            echo json_encode(['success' => true, 'message' => 'Service updated successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No changes made or service not found.']);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+}, ['post']);
 
 
 

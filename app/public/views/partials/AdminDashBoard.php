@@ -141,6 +141,39 @@ if (session_status() === PHP_SESSION_NONE) {
   </form>
 </div>
 
+
+<!-- Update Service Modal -->
+<!-- Update Service Modal -->
+<div id="edit-service-modal" class="modal">
+  <form id="edit-service-form" onsubmit="submitUpdateService(); return false;">
+    <h3>Update Service</h3>
+    <input type="hidden" id="edit-service-id" />
+
+    <!-- Service Name -->
+    <label for="edit-service-name">Service Name</label>
+    <input type="text" id="edit-service-name" placeholder="Service Name" required />
+
+    <!-- Category Dropdown -->
+    <label for="edit-service-category">Category</label>
+    <select id="edit-service-category" required>
+      <!-- Categories will be dynamically populated -->
+    </select>
+
+    <!-- Service Price -->
+    <label for="edit-service-price">Price</label>
+    <input type="number" id="edit-service-price" placeholder="Price" required />
+
+    <!-- Service Duration -->
+    <label for="edit-service-duration">Duration (HH:MM:SS)</label>
+    <input type="time" id="edit-service-duration" step="1" required />
+
+    <button type="submit">Save Changes</button>
+    <button type="button" onclick="closeEditServiceModal()">Cancel</button>
+  </form>
+</div>
+
+
+
 <div id="add-service-modal" class="modal">
   <form id="add-service-form">
     <h3>Create New Service</h3>
@@ -242,10 +275,6 @@ if (session_status() === PHP_SESSION_NONE) {
     <button type="button" onclick="closeAddServiceModal()">Cancel</button>
   </form>
 </div>
-
-
-
-
   <script src="../../assets/js/adminDashboard.js"></script>
 </body>
 </html>

@@ -92,27 +92,6 @@ class ServiceModel extends BaseModel
         return self::$pdo->lastInsertId();
     }
 
-    /**
-     * Update an existing service
-     */
-    public function updateService($service_id, $service_name, $category, $price, $duration) 
-    {
-        $query = "UPDATE services 
-                  SET name = :service_name, 
-                      category = :category, 
-                      price = :price, 
-                      duration = :duration 
-                  WHERE id = :service_id";
-        $statement = self::$pdo->prepare($query);
-        $statement->execute([
-            "service_id" => $service_id,
-            "service_name" => $service_name,
-            "category" => $category,
-            "price" => $price,
-            "duration" => $duration
-        ]);
-        return $statement->rowCount();
-    }
 
     /**
      * Delete a service by ID
@@ -153,6 +132,30 @@ class ServiceModel extends BaseModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch as an indexed array
     }
+
+
+       /**
+     * Update an existing service
+     */
+    public function updateService($service_id, $service_name, $category, $price, $duration)
+{
+    $query = "UPDATE services 
+              SET name = :service_name, 
+                  category = :category, 
+                  price = :price, 
+                  duration = :duration 
+              WHERE id = :service_id";
+    $statement = self::$pdo->prepare($query);
+    $statement->execute([
+        "service_id" => $service_id,
+        "service_name" => $service_name,
+        "category" => $category,
+        "price" => $price,
+        "duration" => $duration
+    ]);
+    return $statement->rowCount();
+}
+
     
     
 }

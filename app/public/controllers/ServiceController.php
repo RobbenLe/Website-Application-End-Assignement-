@@ -38,14 +38,11 @@ class ServiceController
     /**
      * Update an existing service
      */
-    public function updateService($service_id, $service_name, $category, $price, $duration)
+    public function updateService($id, $name, $category, $price, $duration)
     {
-        try {
-            return $this->serviceModel->updateService($service_id, $service_name, $category, $price, $duration);
-        } catch (Exception $e) {
-            return "Error: " . $e->getMessage();
-        }
+        return $this->serviceModel->updateService($id, $name, $category, $price, $duration);
     }
+
 
     public function getAllCategories() {
         try {
@@ -75,7 +72,7 @@ class ServiceController
     }
 
     /**
-     * Add a service
+     * Delete a service
      */
     public function deleteService($service_id) 
 {

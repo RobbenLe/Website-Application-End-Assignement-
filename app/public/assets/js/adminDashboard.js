@@ -71,7 +71,7 @@ function populateServiceTable(groupedServices) {
             <td>${service.price}</td>
             <td>${service.duration}</td>
             <td>
-              <button onclick="editService(${service.id})">Edit</button>
+              <button onclick="editService(${service.id}, '${service.name}', '${service.category}', ${service.price}, '${service.duration}')">Edit</button>
               <button onclick="deleteService(${service.id})">Delete</button> <!-- Ensure service.id is passed -->
             </td>
           </tr>
@@ -236,16 +236,16 @@ async function deleteTechnician(technicianId) {
 //////////////////////////////////////////////////////////// Add new service
 // Open Add Service Modal
 
-async function loadCategories() {
+async function loadCategories(dropdownId) {
   try {
     const response = await fetch("/api/getCategories");
     const data = await response.json();
 
     if (data.success) {
-      const categoryDropdown = document.getElementById("add-service-category");
+      const dropdown = document.getElementById(dropdownId);
 
       // Clear existing options
-      categoryDropdown.innerHTML =
+      dropdown.innerHTML =
         '<option value="" disabled selected>Select Category</option>';
 
       // Populate categories
@@ -253,7 +253,7 @@ async function loadCategories() {
         const option = document.createElement("option");
         option.value = category;
         option.textContent = category;
-        categoryDropdown.appendChild(option);
+        dropdown.appendChild(option);
       });
     } else {
       console.error("Failed to load categories:", data.message);
@@ -368,4 +368,86 @@ async function deleteService(serviceId) {
     console.error("Error:", error);
     alert("An error occurred while deleting the service.");
   }
+}
+
+/////////////////////////////////////////////////////////Update Service
+// Open the Edit Service Modal and Pre-fill Details
+// For Add Service Modal
+document.addEventListener("DOMContentLoaded", () =>
+  loadCategories("add-service-category")
+);
+
+async function editService(id, name, category, price, duration) {
+  // Populate the edit modal fields
+  document.getElementById("edit-service-id").value = id;
+  document.getElementById("edit-service-name").value = name;
+  document.getElementById("edit-service-price").value = price;
+  document.getElementById("edit-service-duration").value = duration;
+
+  // Populate the dropdown with categories
+  const categoryDropdown = document.getElementById("edit-service-category");
+
+  try {
+    const response = await fetch("/api/getCategories");
+    const data = await response.json();
+
+    if (data.success) {
+      // Clear existing options
+      categoryDropdown.innerHTML =
+        '<option value="" disabled>Select Category</option>';
+
+      // Populate categories and set the current category
+      data.categories.forEach((cat) => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        if (cat === category) {
+          option.selected = true; // Preselect current category
+        }
+        categoryDropdown.appendChild(option);
+      });
+    } else {
+      console.error("Failed to load categories:", data.message);
+    }
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+  }
+
+  // Show the modal
+  document.getElementById("edit-service-modal").style.display = "block";
+}
+
+// Close the Edit Service Modal
+function closeEditServiceModal() {
+  document.getElementById("edit-service-modal").style.display = "none";
+}
+
+// Submit Updated Service Details to Backend
+function submitUpdateService() {
+  const updatedService = {
+    id: document.getElementById("edit-service-id").value,
+    name: document.getElementById("edit-service-name").value,
+    category: document.getElementById("edit-service-category").value,
+    price: document.getElementById("edit-service-price").value,
+    duration: document.getElementById("edit-service-duration").value,
+  };
+
+  fetch("/api/updateService", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedService),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert("Service updated successfully!");
+        location.reload(); // Refresh to show updated data
+      } else {
+        alert("Failed to update service: " + data.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("An error occurred while updating the service.");
+    });
 }
