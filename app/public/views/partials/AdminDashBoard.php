@@ -50,7 +50,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- Manage Services -->
     <section class="admin-panel">
         <h3>Manage Services</h3>
-        <button onclick="showServiceForm()">Add Service</button>
+        <button onclick="openAddServiceModal()">Add Service</button>
         <table>
             <thead>
                 <tr>
@@ -140,6 +140,112 @@ if (session_status() === PHP_SESSION_NONE) {
     <button type="submit">Save</button>
   </form>
 </div>
+
+<div id="add-service-modal" class="modal">
+  <form id="add-service-form">
+    <h3>Create New Service</h3>
+
+    <!-- Service Name -->
+    <label for="add-service-name">Service Name</label>
+    <input
+      type="text"
+      name="name"
+      id="add-service-name"
+      placeholder="e.g., Gel Nails - New Set"
+      required
+    />
+
+    <!-- Category Dropdown -->
+    <label for="add-service-category">Category</label>
+    <select
+      name="category"
+      id="add-service-category"
+      required
+    >
+      <!-- Options will be dynamically added here -->
+    </select>
+
+    <!-- Service Price -->
+    <label for="add-service-price">Price</label>
+    <input
+      type="number"
+      name="price"
+      id="add-service-price"
+      placeholder="e.g., 35.00"
+      step="0.01"
+      required
+    />
+
+    <!-- Service Duration -->
+    <label for="add-service-duration">Duration (HH:MM:SS)</label>
+    <input
+      type="time"
+      name="duration"
+      id="add-service-duration"
+      step="1"
+      required
+    />
+
+    <!-- Submit Button -->
+    <button type="submit">Create Service</button>
+    <button type="button" onclick="closeAddServiceModal()">Cancel</button>
+  </form>
+  
+<!-- Add Service Modal -->
+<div id="add-service-modal" class="modal">
+  <form id="add-service-form">
+    <h3>Create New Service</h3>
+
+    <!-- Service Name -->
+    <label for="add-service-name">Service Name</label>
+    <input
+      type="text"
+      name="name"
+      id="add-service-name"
+      placeholder="e.g., Gel Nails - New Set"
+      required
+    />
+
+    <!-- Category Dropdown -->
+    <label for="add-service-category">Category</label>
+    <select
+      name="category"
+      id="add-service-category"
+      required
+    >
+      <!-- Options will be dynamically added here -->
+    </select>
+
+    <!-- Service Price -->
+    <label for="add-service-price">Price</label>
+    <input
+      type="number"
+      name="price"
+      id="add-service-price"
+      placeholder="e.g., 35.00"
+      step="0.01"
+      required
+    />
+
+    <!-- Service Duration -->
+    <label for="add-service-duration">Duration (HH:MM:SS)</label>
+    <input
+      type="time"
+      name="duration"
+      id="add-service-duration"
+      step="1"
+      required
+    />
+
+    <!-- Submit Button -->
+    <button type="submit">Create Service</button>
+    <button type="button" onclick="closeAddServiceModal()">Cancel</button>
+  </form>
+</div>
+
+
+
+
   <script src="../../assets/js/adminDashboard.js"></script>
 </body>
 </html>

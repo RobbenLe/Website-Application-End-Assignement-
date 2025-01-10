@@ -36,18 +36,6 @@ class ServiceController
     }
 
     /**
-     * Add a new service
-     */
-    public function addService($service_name, $category, $price, $duration)
-    {
-        try {
-            return $this->serviceModel->addService($service_name, $category, $price, $duration);
-        } catch (Exception $e) {
-            return "Error: " . $e->getMessage();
-        }
-    }
-
-    /**
      * Update an existing service
      */
     public function updateService($service_id, $service_name, $category, $price, $duration)
@@ -59,15 +47,50 @@ class ServiceController
         }
     }
 
-    /**
-     * Delete a service by ID
-     */
-    public function deleteService($service_id)
-    {
+    public function getAllCategories() {
         try {
-            return $this->serviceModel->deleteService($service_id);
+            return $this->serviceModel->getAllCategories();
         } catch (Exception $e) {
-            return "Error: " . $e->getMessage();
+            throw new Exception("Failed to retrieve categories: " . $e->getMessage());
         }
     }
+        
+    /**
+     * Add a service
+     */
+    public function addService($name, $category, $price, $duration) {
+        if (empty($name) || empty($category) || empty($price) || empty($duration)) {
+            throw new Exception("All fields are required.");
+        }
+    
+        if (!is_numeric($price) || $price <= 0) {
+            throw new Exception("Invalid price format. Must be a positive number.");
+        }
+    
+        if (!preg_match('/^\d{2}:\d{2}:\d{2}$/', $duration)) {
+            throw new Exception("Invalid duration format. Must be HH:MM:SS.");
+        }
+    
+        return $this->serviceModel->addService($name, $category, $price, $duration);
+    }
+
+    /**
+     * Add a service
+     */
+    public function deleteService($service_id) 
+{
+    if (empty($service_id)) {
+        throw new Exception("Service ID is required to delete a service.");
+    }
+ 
+    try {
+        return $this->serviceModel->deleteService($service_id);
+    } catch (Exception $e) {
+        throw new Exception("Failed to delete service: " . $e->getMessage());
+    }
+}
+
+
+    
+    
 }

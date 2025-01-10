@@ -46,7 +46,7 @@ function populateTechnicianTable(technicians) {
 // Populate Service Table
 function populateServiceTable(groupedServices) {
   const serviceTable = document.getElementById("service-table");
-  serviceTable.innerHTML = ""; // Clear existing table content
+  serviceTable.innerHTML = ""; // Clear existing content
 
   if (Object.keys(groupedServices).length === 0) {
     serviceTable.innerHTML = `<tr><td colspan="6">No services found</td></tr>`;
@@ -54,14 +54,14 @@ function populateServiceTable(groupedServices) {
   }
 
   for (const [category, services] of Object.entries(groupedServices)) {
-    // Add a row for the category
+    // Add a category row
     serviceTable.innerHTML += `
         <tr>
           <td colspan="6" style="font-weight: bold; background-color: #f9f9f9;">${category}</td>
         </tr>
       `;
 
-    // Add rows for services under the category
+    // Add service rows
     services.forEach((service) => {
       serviceTable.innerHTML += `
           <tr>
@@ -72,7 +72,7 @@ function populateServiceTable(groupedServices) {
             <td>${service.duration}</td>
             <td>
               <button onclick="editService(${service.id})">Edit</button>
-              <button onclick="deleteService(${service.id})">Delete</button>
+              <button onclick="deleteService(${service.id})">Delete</button> <!-- Ensure service.id is passed -->
             </td>
           </tr>
         `;
@@ -233,5 +233,139 @@ async function deleteTechnician(technicianId) {
   }
 }
 
+//////////////////////////////////////////////////////////// Add new service
+// Open Add Service Modal
+
+async function loadCategories() {
+  try {
+    const response = await fetch("/api/getCategories");
+    const data = await response.json();
+
+    if (data.success) {
+      const categoryDropdown = document.getElementById("add-service-category");
+
+      // Clear existing options
+      categoryDropdown.innerHTML =
+        '<option value="" disabled selected>Select Category</option>';
+
+      // Populate categories
+      data.categories.forEach((category) => {
+        const option = document.createElement("option");
+        option.value = category;
+        option.textContent = category;
+        categoryDropdown.appendChild(option);
+      });
+    } else {
+      console.error("Failed to load categories:", data.message);
+    }
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+  }
+}
+
+// Call loadCategories when the page loads
+document.addEventListener("DOMContentLoaded", loadCategories);
+
+// Call loadCategories when the modal is opened
+document
+  .getElementById("add-service-modal")
+  .addEventListener("show", loadCategories);
+
+function openAddServiceModal() {
+  loadCategories(); // Reload categories each time modal opens
+  document.getElementById("add-service-modal").style.display = "flex";
+}
+
+function closeAddServiceModal() {
+  document.getElementById("add-service-modal").style.display = "none";
+}
+
+document
+  .getElementById("add-service-form")
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const serviceName = document
+      .getElementById("add-service-name")
+      .value.trim();
+    const serviceCategory = document
+      .getElementById("add-service-category")
+      .value.trim();
+    const servicePrice = document
+      .getElementById("add-service-price")
+      .value.trim();
+    const serviceDuration = document
+      .getElementById("add-service-duration")
+      .value.trim();
+
+    if (!serviceName || !serviceCategory || !servicePrice || !serviceDuration) {
+      alert("All fields are required!");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/addService", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: serviceName,
+          category: serviceCategory,
+          price: parseFloat(servicePrice),
+          duration: serviceDuration,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Service added successfully!");
+        loadAdminDashboardData(); // Reload data
+        closeAddServiceModal();
+      } else {
+        alert("Error: " + result.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while adding the service.");
+    }
+  });
+
 // Call this function when the admin dashboard loads
 document.addEventListener("DOMContentLoaded", loadAdminDashboardData);
+
+////////////////////////////////////////////////////Delete Service by id
+async function deleteService(serviceId) {
+  if (!serviceId) {
+    console.error("Service ID is missing.");
+    alert("Service ID is required to delete the service.");
+    return;
+  }
+
+  if (!confirm("Are you sure you want to delete this service?")) {
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/deleteService", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ service_id: serviceId }), // Ensure service_id is included here
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert("Service deleted successfully!");
+      loadAdminDashboardData(); // Reload the table
+    } else {
+      alert("Failed to delete service: " + result.message);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred while deleting the service.");
+  }
+}

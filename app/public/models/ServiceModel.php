@@ -119,9 +119,40 @@ class ServiceModel extends BaseModel
      */
     public function deleteService($service_id) 
     {
-        $query = "DELETE FROM services WHERE id = :service_id";
-        $statement = self::$pdo->prepare($query);
-        $statement->execute(["service_id" => $service_id]);
-        return $statement->rowCount();
+    $query = "DELETE FROM services WHERE id = :service_id";
+    $statement = self::$pdo->prepare($query);
+    $statement->execute(["service_id" => $service_id]);
+    return $statement->rowCount();
     }
+
+    
+    /**
+     * Create a service 
+     */
+    public function createService($name, $category, $price, $duration) {
+        $query = "INSERT INTO services (name, category, price, duration) 
+                  VALUES (:name, :category, :price, :duration)";
+    
+        $stmt = self::$pdo->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':category', $category);
+        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':duration', $duration);
+    
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to create service.");
+        }
+    }
+    
+    /**
+     * Get service category
+     */
+    public function getAllCategories() {
+        $query = "SELECT DISTINCT category FROM services";
+        $stmt = self::$pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch as an indexed array
+    }
+    
+    
 }

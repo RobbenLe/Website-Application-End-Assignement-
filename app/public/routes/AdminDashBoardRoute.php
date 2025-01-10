@@ -206,21 +206,89 @@ Route::add('/api/updateService', function () {
     }
 }, ["post"]);
 
-Route::add('/api/deleteService', function () {
+//get categories from the service
+Route::add('/api/getCategories', function () {
     header('Content-Type: application/json');
-    $serviceController = new ServiceController();
+    try {
+        $serviceController = new ServiceController();
+        $categories = $serviceController->getAllCategories();
+        echo json_encode(["success" => true, "categories" => $categories]);
+    } catch (Exception $e) {
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
+    }
+});
+
+
+
+
+// Route to Add a New Service
+Route::add('/api/addService', function () {
+    header('Content-Type: application/json');
+
     $data = json_decode(file_get_contents('php://input'), true);
 
+    $name = $data['name'] ?? '';
+    $category = $data['category'] ?? '';
+    $price = $data['price'] ?? '';
+    $duration = $data['duration'] ?? '';
+
+    if (empty($name) || empty($category) || empty($price) || empty($duration)) {
+        echo json_encode(["success" => false, "message" => "All fields are required."]);
+        exit();
+    }
+
+    if (!is_numeric($price) || $price <= 0) {
+        echo json_encode(["success" => false, "message" => "Invalid price format."]);
+        exit();
+    }
+
+    if (!preg_match('/^\d{2}:\d{2}:\d{2}$/', $duration)) {
+        echo json_encode(["success" => false, "message" => "Invalid duration format."]);
+        exit();
+    }
+
     try {
-        if (isset($data['id'])) {
-            $serviceController->deleteService($data['id']);
-            echo json_encode(["success" => true, "message" => "Service deleted successfully"]);
+        $serviceController = new ServiceController();
+        $serviceController->addService($name, $category, $price, $duration);
+        echo json_encode(["success" => true, "message" => "Service added successfully."]);
+    } catch (Exception $e) {
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
+    }
+}, ["post"]);
+
+//Route to delete dervice by id 
+Route::add('/api/deleteService', function () {
+    header('Content-Type: application/json');
+
+    // Decode the JSON input
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    // Check if service_id is present
+    $service_id = $data['service_id'] ?? null;
+
+    if (empty($service_id)) {
+        echo json_encode(["success" => false, "message" => "Service ID is required."]);
+        exit();
+    }
+
+    try {
+        $serviceController = new ServiceController();
+        $rowsAffected = $serviceController->deleteService($service_id);
+
+        if ($rowsAffected > 0) {
+            echo json_encode(["success" => true, "message" => "Service deleted successfully."]);
         } else {
-            throw new Exception("Missing required parameters");
+            echo json_encode(["success" => false, "message" => "Failed to delete service. Service may not exist."]);
         }
     } catch (Exception $e) {
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 }, ["post"]);
+
+
+
+
+
+
 
 ?>
