@@ -1,3 +1,14 @@
+// Ensure userId is populated from sessionStorage
+document.addEventListener("DOMContentLoaded", () => {
+  const userId = sessionStorage.getItem("userId");
+  if (!userId) {
+    alert("User session is missing. Please log in again.");
+    window.location.href = "/LoginPage";
+  } else {
+    console.log(`User ID: ${userId}`);
+  }
+});
+
 console.log("loadDates function is defined.");
 // Track selected date and technician
 let currentDate = new Date();
@@ -88,102 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
   displaySelectedDate();
 });
 
-// Confirm AnnF c          {
-// " k
-function confirmAppointment() {
-  const technicianId = document.getElementById("technician").value;
-  const selectedDate = document.getElementById("selected-date").value;
-  const selectedTime =
-    JSON.parse(sessionStorage.getItem("selectedTimeSlot")) || {};
-  const selectedTreatments =
-    JSON.parse(sessionStorage.getItem("selectedTreatments")) || [];
-  const customerId = sessionStorage.getItem("userId");
-
-  if (!customerId) {
-    alert("User ID is missing. Please log in again.");
-    window.location.href = "/LoginPage";
-    return;
-  }
-
-  if (
-    !technicianId ||
-    !selectedDate ||
-    !selectedTime.startTime ||
-    !selectedTime.endTime ||
-    selectedTreatments.length === 0
-  ) {
-    alert(
-      "Please ensure you have selected a technician, date, time slot, and at least one treatment."
-    );
-    return;
-  }
-
-  const serviceIds = selectedTreatments
-    .map((service) => service.id)
-    .filter((id) => id !== undefined && id !== null);
-
-  const appointmentData = {
-    customer_id: customerId,
-    technician_id: technicianId,
-    selected_date: selectedDate,
-    start_time: selectedTime.startTime,
-    end_time: selectedTime.endTime,
-    service_ids: serviceIds,
-  };
-
-  console.log("📝 Sending appointment data to backend:", appointmentData);
-
-  fetch("/createAppointment", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(appointmentData),
-  })
-    .then(async (response) => {
-      console.log(
-        "🔄 Response Status from creating an appointment:",
-        await response
-      );
-      if (!response.ok) {
-        const errorText = await response.text(); // Get response text
-        console.error("❌ Raw Response:", errorText);
-        throw new Error(
-          `HTTP Error: ${await response.status} - ${await response.statusText}\nDetails: ${errorText}`
-        );
-      }
-
-      const responseData = await response.json(); // Parse JSON safely
-
-      console.log("✅ Backend Response:", responseData);
-
-      return responseData;
-    })
-    .then((data) => {
-      if (data.success) {
-        console.log("✅ Appointment Created Successfully:", data);
-        alert("Appointment successfully created!");
-        window.location.href = "/AppointmentConfirmation";
-      } else {
-        console.warn("⚠️ Backend returned an error:", data.error);
-        alert(`Failed to create appointment: ${data.error}`);
-      }
-    })
-    .catch((error) => {
-      console.error("❌ Detailed Error Information:", error);
-
-      let errorMessage = "An unexpected error occurred.";
-      if (error.message.includes("HTTP Error")) {
-        errorMessage = `Server Error: ${error.message}`;
-      } else if (error.name === "TypeError") {
-        errorMessage = "Network error or invalid response from server.";
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      alert(`🚨 Appointment Error:\n${errorMessage}`);
-    });
-}
-
 function loadSuggestedTimeSlots() {
   const technicianId = document.getElementById("technician").value;
   const selectedDate = document.getElementById("selected-date").value;
@@ -205,19 +120,24 @@ function loadSuggestedTimeSlots() {
   fetch(
     `/getSuggestedTimeSlots?technician_id=${technicianId}&selected_date=${selectedDate}&duration=${totalDuration}`
   )
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      return response.json();
+    })
     .then((data) => {
-      const slotsContainer = document.getElementById("time-slots");
-      slotsContainer.innerHTML = "";
-
+      console.log("Fetched Slots:", data);
       if (data.error) {
-        slotsContainer.innerHTML = `<p>${data.error}</p>`;
-        return;
+        throw new Error(data.error);
       }
 
+      // Populate slots
+      const slotsContainer = document.getElementById("time-slots");
+      slotsContainer.innerHTML = "";
       if (data.length === 0) {
         slotsContainer.innerHTML =
-          "<p>No suitable time slots available. Please select another day.</p>";
+          "<p>No available slots. Please try another day.</p>";
         return;
       }
 
@@ -230,21 +150,30 @@ function loadSuggestedTimeSlots() {
       });
     })
     .catch((error) => {
-      console.error("Failed to fetch suggested time slots:", error);
-      document.getElementById("time-slots").innerHTML =
-        "<p>Error loading time slots. Please try again.</p>";
+      console.error("Failed to fetch slots:", error.message);
+      const slotsContainer = document.getElementById("time-slots");
+      slotsContainer.innerHTML = `<p>Error loading slots: ${error.message}</p>`;
     });
 }
 
 // Select a time slot
 function selectTime(startTime, endTime) {
+  // Update the selected time display
   document.getElementById(
     "selected-time"
   ).innerText = `Selected Time: ${startTime} - ${endTime}`;
+
+  // Save to hidden inputs
+  document.getElementById("selected-start-time").value = startTime;
+  document.getElementById("selected-end-time").value = endTime;
+
+  // Save to session storage
   sessionStorage.setItem(
     "selectedTimeSlot",
     JSON.stringify({ startTime, endTime })
   );
+
+  console.log("🕒 Selected Time Slot:", { startTime, endTime });
 }
 
 /**
@@ -263,3 +192,107 @@ function loadDates(technicianId) {
   // Automatically load availability for the selected technician and default date
   loadAvailabilityByDate();
 }
+
+// Function to confirm the appointment
+function confirmAppointment() {
+  const customerId = sessionStorage.getItem("userId");
+  const technicianId = document.getElementById("technician").value;
+  const selectedDate = document.getElementById("selected-date").value;
+  const startTime = document.getElementById("selected-start-time").value;
+  const endTime = document.getElementById("selected-end-time").value;
+  const serviceIds = JSON.parse(
+    document.getElementById("selected-service-ids").value || "[]"
+  );
+
+  // Debugging logs
+  console.log("Customer ID:", customerId);
+  console.log("Technician ID:", technicianId);
+  console.log("Selected Date:", selectedDate);
+  console.log("Start Time:", startTime);
+  console.log("End Time:", endTime);
+  console.log("Service IDs:", serviceIds);
+
+  // Validate inputs
+  if (
+    !customerId ||
+    !technicianId ||
+    !selectedDate ||
+    !startTime ||
+    !endTime ||
+    serviceIds.length === 0
+  ) {
+    alert("Please ensure all fields are filled in correctly.");
+    return;
+  }
+
+  const appointmentData = {
+    customerId,
+    technicianId,
+    selectedDate,
+    startTime,
+    endTime,
+    serviceIds,
+  };
+
+  fetch("/createAppointment", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(appointmentData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to create appointment.");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        alert(
+          `Appointment created successfully! Appointment ID: ${data.appointmentId}`
+        );
+        window.location.href = "/AppointmentSuccess";
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert(
+        "An error occurred while creating the appointment. Please try again."
+      );
+    });
+}
+
+// Attach the confirmAppointment function to the form submission event
+document.addEventListener("DOMContentLoaded", function () {
+  const confirmButton = document.getElementById("confirm-btn");
+  if (confirmButton) {
+    confirmButton.addEventListener("click", confirmAppointment);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const selectedTreatments =
+    JSON.parse(sessionStorage.getItem("selectedTreatments")) || [];
+  const summaryDiv = document.getElementById("selected-treatments");
+
+  summaryDiv.innerHTML = ""; // Clear previous content
+
+  if (selectedTreatments.length > 0) {
+    selectedTreatments.forEach((treatment) => {
+      const treatmentInfo = document.createElement("p");
+      treatmentInfo.textContent = `${treatment.name} - ${treatment.duration} min - €${treatment.price}`;
+      summaryDiv.appendChild(treatmentInfo);
+    });
+
+    // Store service IDs for the confirmation process
+    const serviceIds = selectedTreatments.map((treatment) => treatment.id);
+    document.getElementById("selected-service-ids").value =
+      JSON.stringify(serviceIds);
+  } else {
+    summaryDiv.innerHTML =
+      "<p>No treatments selected. Please go back and select treatments.</p>";
+  }
+});

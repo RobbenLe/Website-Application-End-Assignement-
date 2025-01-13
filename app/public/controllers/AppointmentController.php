@@ -49,13 +49,12 @@ class AppointmentController
                 $endTime
             );
     
-            return ["success" => true, "message" => "Appointment created successfully"];
+            return ["success" => true, "message" => "Appointment created successfully", "appointmentId" => $appointmentId];
         } catch (Exception $e) {
             return ["success" => false, "error" => $e->getMessage()];
         }
     }
-    
-    
+      
     
     private function validateTimeSlot($technicianId, $selectedDate, $startTime, $endTime) {
         $isAvailable = $this->appointmentModel->isTimeSlotAvailable(

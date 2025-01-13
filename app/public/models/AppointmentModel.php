@@ -11,48 +11,63 @@ class AppointmentModel extends BaseModel
   }
 
   public function createAppointment($customerId, $technicianId, $appointmentDate, $startTime, $endTime) {
-    $query = "INSERT INTO appointments (customer_id, technician_id, appointment_date, appointment_start_time, appointment_end_time, appointment_status) 
-              VALUES (:customer_id, :technician_id, :appointment_date, :start_time, :end_time, 'pending')";
-    
-    $stmt = self::$pdo->prepare($query);
-    $stmt->execute([
-        'customer_id' => $customerId,
-        'technician_id' => $technicianId,
-        'appointment_date' => $appointmentDate,
-        'start_time' => $startTime,
-        'end_time' => $endTime
-    ]);
+    try {
+        $query = "INSERT INTO appointments (customer_id, technician_id, appointment_date, appointment_start_time, appointment_end_time, appointment_status) 
+                  VALUES (:customer_id, :technician_id, :appointment_date, :start_time, :end_time, 'pending')";
+        
+        $stmt = self::$pdo->prepare($query);
+        $stmt->execute([
+            'customer_id' => $customerId,
+            'technician_id' => $technicianId,
+            'appointment_date' => $appointmentDate,
+            'start_time' => $startTime,
+            'end_time' => $endTime
+        ]);
 
-    return self::$pdo->lastInsertId();
+        // Return the ID of the newly created appointment
+        return self::$pdo->lastInsertId();
+    } catch (PDOException $e) {
+        throw new Exception("Failed to create appointment: " . $e->getMessage());
+    }
 }
+
+
 
 // Link Services to Appointment
 public function linkServiceToAppointment($appointmentId, $serviceId) {
-    $query = "INSERT INTO appointment_services (appointment_id, service_id) VALUES (:appointment_id, :service_id)";
-    $stmt = self::$pdo->prepare($query);
-    $stmt->execute([
-        'appointment_id' => $appointmentId,
-        'service_id' => $serviceId
-    ]);
+    try {
+        $query = "INSERT INTO appointment_services (appointment_id, service_id) 
+                  VALUES (:appointment_id, :service_id)";
+        
+        $stmt = self::$pdo->prepare($query);
+        $stmt->execute([
+            'appointment_id' => $appointmentId,
+            'service_id' => $serviceId
+        ]);
+    } catch (PDOException $e) {
+        throw new Exception("Failed to link service to appointment: " . $e->getMessage());
+    }
 }
+
 
 /**
  * Block Technician Time Slot
  */
 public function blockTechnicianTimeSlot($technicianId, $selectedDate, $startTime, $endTime) {
-    $query = "UPDATE technician_availability 
-              SET available_start_time = :end_time 
-              WHERE technician_id = :technician_id 
-              AND available_date = :selected_date 
-              AND available_start_time = :start_time";
-    
-    $stmt = self::$pdo->prepare($query);
-    $stmt->execute([
-        'technician_id' => $technicianId,
-        'selected_date' => $selectedDate,
-        'start_time' => $startTime,
-        'end_time' => $endTime
-    ]);
+    try {
+        $query = "INSERT INTO technician_unavailability (technician_id, unavailable_date, start_time, end_time) 
+                  VALUES (:technician_id, :unavailable_date, :start_time, :end_time)";
+        
+        $stmt = self::$pdo->prepare($query);
+        $stmt->execute([
+            'technician_id' => $technicianId,
+            'unavailable_date' => $selectedDate,
+            'start_time' => $startTime,
+            'end_time' => $endTime
+        ]);
+    } catch (PDOException $e) {
+        throw new Exception("Failed to block technician time slot: " . $e->getMessage());
+    }
 }
 
 /**
@@ -63,8 +78,7 @@ public function blockTechnicianTimeSlot($technicianId, $selectedDate, $startTime
  * @param int $duration (in minutes)
  * @return array
  */
-public function getAvailableTimeSlotsByDuration($technicianId, $date, $duration)
-{
+public function getAvailableTimeSlotsByDuration($technicianId, $date, $duration) {
     $query = "SELECT available_start_time, available_end_time 
               FROM technician_availability 
               WHERE technician_id = :technician_id 
@@ -78,8 +92,12 @@ public function getAvailableTimeSlotsByDuration($technicianId, $date, $duration)
         'duration' => $duration
     ]);
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    error_log("Available slots: " . json_encode($results));
+    return $results;
 }
+
+
 
 public function getSuggestedTimeSlots($technicianId, $date, $duration) {
     $query = "SELECT available_start_time, available_end_time 
@@ -104,15 +122,26 @@ public function getSuggestedTimeSlots($technicianId, $date, $duration) {
     $slotDuration = new DateInterval('PT' . $duration . 'M'); // Total duration in minutes
 
     $suggestedSlots = [];
-    while ($startTime->add($slotDuration) <= $endTime) {
+    while ($startTime < $endTime) {
+        $slotEndTime = clone $startTime;
+        $slotEndTime->add($slotDuration);
+
+        if ($slotEndTime > $endTime) {
+            break;
+        }
+
         $suggestedSlots[] = [
             'start' => $startTime->format('H:i'),
-            'end' => $startTime->add($slotDuration)->format('H:i')
+            'end' => $slotEndTime->format('H:i')
         ];
+
+        // Increment start time for the next slot
+        $startTime->add($slotDuration);
     }
 
     return $suggestedSlots;
 }
+
 
 
 

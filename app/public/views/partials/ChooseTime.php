@@ -1,8 +1,20 @@
 <?php
-// Ensure session is started
-if (session_status() == PHP_SESSION_NONE) {
+// Start the session
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Check if the user is logged in
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    header("Location: /LoginPage");
+    exit();
+}
+
+// Access session variables
+$username = $_SESSION['username'];
+$role = $_SESSION['role'];
+$userId = $_SESSION['user_id'];
+
 ?>
 
 <!DOCTYPE html>
@@ -40,9 +52,11 @@ if (session_status() == PHP_SESSION_NONE) {
 
     <!-- Select Date -->
     <div class="date-selection">
-        <label for="selected-date"><strong>Select Date:</strong></label>
-        <input type="date" id="selected-date" name="selected_date" min="<?php echo date('Y-m-d'); ?>" onchange="loadSuggestedTimeSlots()">
-    </div>
+    <label for="selected-date"><strong>Select Date:</strong></label>
+    <input type="date" id="selected-date" name="selected_date" min="<?php echo date('Y-m-d'); ?>" onchange="loadSuggestedTimeSlots()">
+    <p id="selected-date-display"></p> <!-- Add this line -->
+</div>
+
 
     <!-- Suggested Time Slots Section -->
     <div id="time-slots" class="time-slot-container">
@@ -61,7 +75,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
 
     <!-- Confirm Appointment Button -->
-    <button id="confirm-btn" onclick="confirmAppointment()">Confirm Appointment</button>
+    <button type="button" id="confirm-btn" onclick="confirmAppointment()">Confirm Appointment</button>
 </div>
 
 <!-- JavaScript for Displaying Treatments -->
@@ -91,7 +105,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
     sessionStorage.setItem('serviceIds', JSON.stringify(serviceIds));
 });
-
 </script>
 <script src="../../assets/js/chooseTime.js"></script>
 <script src="../../assets/js/auth.js"></script>

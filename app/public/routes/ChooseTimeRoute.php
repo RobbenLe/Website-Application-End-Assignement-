@@ -9,14 +9,18 @@ require_once(__DIR__ . "/../controllers/AppointmentController.php");
  * ======================================
  */
 Route::add('/ChooseTimePage', function () {
-    if (session_status() == PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
-    $userController = new UserController();
-    $technicians = $userController->getAllTechnicians();
-    $totalDuration = $_SESSION['total_duration'] ?? 0;
+    // Validate session and ensure the user is logged in
+    if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+        header("Location: /LoginPage");
+        exit();
+    }
 
+    $userId = $_SESSION['user_id'];
+    $technicians = (new UserController())->getAllTechnicians();
     require_once(__DIR__ . "/../views/pages/ChooseTimePage.php");
 });
 
@@ -48,6 +52,7 @@ Route::add('/getTechnicianAvailabilityByDate', function () {
 
     exit();
 });
+
 
 Route::add('/getSuggestedTimeSlots', function () {
     if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -119,54 +124,49 @@ Route::add('/getTechnicianAvailabilityByDate', function () {
  * Route: Create Appointment
  */
 Route::add('/createAppointment', function () {
-    echo json_encode(['message' => 'In route createAppointment']);
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405);
-        echo json_encode(["error" => "Method not allowed"]);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            $input = json_decode(file_get_contents("php://input"), true);
+            $customerId = $input['customerId'] ?? null;
+            $technicianId = $input['technicianId'] ?? null;
+            $selectedDate = $input['selectedDate'] ?? null;
+            $startTime = $input['startTime'] ?? null;
+            $endTime = $input['endTime'] ?? null;
+            $serviceIds = $input['serviceIds'] ?? [];
+
+            if (empty($customerId) || empty($technicianId) || empty($selectedDate) || empty($startTime) || empty($endTime) || empty($serviceIds)) {
+                throw new Exception("All fields are required.");
+            }
+
+            $appointmentController = new AppointmentController();
+            $appointmentId = $appointmentController->processAppointment(
+                $customerId,
+                $technicianId,
+                $selectedDate,
+                $startTime,
+                $endTime,
+                $serviceIds
+            );
+
+            echo json_encode(["success" => true, "appointmentId" => $appointmentId]);
+        } catch (Exception $e) {
+            error_log("Error in /createAppointment: " . $e->getMessage());
+            echo json_encode(["success" => false, "error" => $e->getMessage()]);
+        }
         exit();
     }
+},['POST']);
 
-    try {
-        $data = json_decode(file_get_contents("php://input"), true);
 
-        if (
-            empty($data['customer_id']) ||
-            empty($data['technician_id']) ||
-            empty($data['selected_date']) ||
-            empty($data['start_time']) ||
-            empty($data['end_time']) ||
-            empty($data['service_ids'])
-        ) {
-            throw new Exception("Missing required fields in the request.");
-        }
 
-        error_log("✅ Data received: " . print_r($data, true));
 
-        $appointmentController = new AppointmentController();
-        $appointmentId = $appointmentController->processAppointment(
-            $data['customer_id'],
-            $data['technician_id'],
-            $data['selected_date'],
-            $data['start_time'],
-            $data['end_time'],
-            $data['service_ids']
-        );
 
-        error_log("✅ Appointment successfully created with ID: " . $appointmentId);
 
-        echo json_encode([
-            "success" => true,
-            "appointmentId" => $appointmentId
-        ]);
-    } catch (Exception $e) {
-        error_log("❌ Appointment Creation Failed: " . $e->getMessage());
-        http_response_code(400); // Bad Request
-        echo json_encode([
-            "success" => false,
-            "error" => "Failed to create appointment: " . $e->getMessage()
-        ]);
-    }
-});
+
 
 
 

@@ -1,3 +1,14 @@
+// Ensure userId is populated from sessionStorage
+document.addEventListener("DOMContentLoaded", () => {
+  const userId = sessionStorage.getItem("userId");
+  if (!userId) {
+    alert("User session is missing. Please log in again.");
+    window.location.href = "/LoginPage";
+  } else {
+    console.log(`User ID: ${userId}`);
+  }
+});
+
 // Highlight selected category
 function showCategory(categoryId, event) {
   document.querySelectorAll(".service-category").forEach((category) => {

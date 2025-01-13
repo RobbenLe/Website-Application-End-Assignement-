@@ -9,5 +9,8 @@ Route::add('/homePage' ,function(){
         exit();
     }
 
+    // Pass user data to the view
+    $userId = $_SESSION['user_id'];
+
 require_once(__DIR__ . "/../views/pages/homePage.php");
 });

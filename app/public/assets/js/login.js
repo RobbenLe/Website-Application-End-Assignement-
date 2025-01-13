@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
               window.location.href = "/homePage";
               break;
             case "technician":
-              window.location.href = "/TechnicianDashboard";
+              window.location.href = "/TechnicianDashBoardPage";
               break;
             case "admin":
               window.location.href = "/AdminDashBoardPage";
