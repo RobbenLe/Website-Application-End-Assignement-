@@ -58,8 +58,6 @@ if (session_status() === PHP_SESSION_NONE) {
                 <label for="role">Role</label>
                 <select id="role" name="role">
                     <option value="customer">Customer</option>
-                    <option value="technician">Technician</option>
-                    <option value="admin">Admin</option>
                 </select>
             </div>
 

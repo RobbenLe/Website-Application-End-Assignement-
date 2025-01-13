@@ -20,7 +20,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <section class="navigationBar">
     <h1 class="logo">Admin Dashboard</h1>
     <nav class="nav">
-      <a href="/Logout" class="logoutButton">Logout</a>
+      <a href="/LoginPage" class="logoutButton">Logout</a>
     </nav>
   </section>
 

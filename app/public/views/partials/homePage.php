@@ -30,7 +30,7 @@ $userId = $_SESSION['user_id'];
     <h1 class="logo">Rosa Nails & Spa</h1>
     <nav class="nav">
       <span>Welcome, <?php echo htmlspecialchars($username); ?> (<?php echo htmlspecialchars($role); ?>)</span>
-      <a type="button" class="loginButton" href="/Logout">Log Out</a>
+      <a type="button" class="loginButton" href="/LoginPage">Log Out</a>
     </nav>
   </section>
 

@@ -26,13 +26,21 @@ $userId = $_SESSION['user_id'];
     <link rel="stylesheet" href="../../assets/css/technicianDashboard.css">
 </head>
 <body>
+    <!-- Navigation Bar -->
+  <section class="navigationBar">
+    <h1 class="logo">Rosa Nails & Spa</h1>
+    <nav class="nav">
+      <span>Welcome, <?php echo htmlspecialchars($username); ?> (<?php echo htmlspecialchars($role); ?>)</span>
+      <a type="button" class="loginButton" href="/LoginPage">Log Out</a>
+    </nav>
+  </section>
+
     <div class="dashboard-container">
         <header>
             <h1>Welcome to Technician Dashboard</h1>
         </header>
 
         <!-- Success and Error Messages -->
-        <?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
         <?php if (!empty($_SESSION['success_message'])): ?>
             <div class="message success">
                 <p><?php echo $_SESSION['success_message']; unset($_SESSION['success_message']); ?></p>

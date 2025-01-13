@@ -1,20 +1,39 @@
 /* technicianDashboard.css */
 
-/* General Styles */
+/* Overall page background: soft yellow */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #fff9e6; /* Soft yellow background */
-  color: #333;
   margin: 0;
   padding: 0;
-  line-height: 1.6;
+  font-family: Arial, sans-serif;
+  background-color: #fffde7; /* Soft pastel yellow */
 }
 
-header {
-  background-color: #f8d46b; /* A slightly darker yellow for the header */
-  padding: 20px;
-  text-align: center;
+/* Navigation Bar: slightly darker pastel yellow */
+.navigationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff8c5; /* A tad deeper pastel yellow */
+  padding: 15px 30px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.nav .loginButton {
+  background-color: #e91e63;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.nav .loginButton:hover {
+  background-color: #c2185b;
 }
 
 header h1 {

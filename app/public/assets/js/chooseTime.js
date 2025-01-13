@@ -252,7 +252,7 @@ function confirmAppointment() {
         alert(
           `Appointment created successfully! Appointment ID: ${data.appointmentId}`
         );
-        window.location.href = "/AppointmentSuccess";
+        window.location.href = "/homePage";
       } else {
         alert(`Error: ${data.error}`);
       }
