@@ -11,22 +11,35 @@ class TechnicianController
         $this->technicianModel = new TechnicianModel();
     }
 
-    /**
-     * Get appointments for a technician by date
-     *
-     * @param int $technicianId
-     * @param string $date
-     * @return array
-     */
     public function getAppointmentsByDate($technicianId, $date)
-    {
-        try {
-            return $this->technicianModel->getAppointmentsByDate($technicianId, $date);
-        } catch (Exception $e) {
-            error_log("Error fetching appointments: " . $e->getMessage());
-            throw new Exception("Unable to fetch appointments. Please try again later.");
+{
+    try {
+        if (empty($technicianId) || empty($date)) {
+            throw new InvalidArgumentException("Technician ID and date are required.");
         }
+
+        $appointments = $this->technicianModel->getAppointmentsByDate($technicianId, $date);
+
+        if (empty($appointments)) {
+            error_log("Controller: No appointments found for Technician ID: $technicianId on Date: $date");
+        } else {
+            error_log("Controller: Appointments fetched: " . json_encode($appointments));
+        }
+
+        return $appointments;
+    } catch (InvalidArgumentException $e) {
+        error_log("Validation error in getAppointmentsByDate: " . $e->getMessage());
+        throw $e;
+    } catch (Exception $e) {
+        error_log("Controller error in getAppointmentsByDate: " . $e->getMessage());
+        throw new Exception("Unable to fetch appointments. Please try again later.");
     }
+}
+
+
+
+    
+
 
     /**
      * Set a technician's availability

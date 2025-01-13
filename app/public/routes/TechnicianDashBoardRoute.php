@@ -2,47 +2,80 @@
 require_once(__DIR__ . "/../controllers/TechnicianController.php"); 
 
 Route::add('/TechnicianDashBoardPage', function () {
-    if (session_status() == PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
-    // Ensure the user is logged in and has a valid role
-    if ($_SESSION['role'] !== 'technician') {
-        header("Location: /Unauthorized");
+    if (!isset($_SESSION['is_logged_in']) || $_SESSION['role'] !== 'technician') {
+        header("Location: /LoginPage");
         exit();
     }
 
-    // Include the Technician Dashboard HTML file
+    // Log the session details
+    error_log("Technician Dashboard Session: " . json_encode($_SESSION));
+
+    $technicianId = $_SESSION['user_id'];
+    if (!$technicianId) {
+        error_log("Technician Dashboard: User ID missing in session");
+        header("Location: /LoginPage");
+        exit();
+    }
+
     require_once(__DIR__ . "/../views/pages/TechnicianDashBoardPage.php");
 });
 
 
 
 Route::add('/getAppointmentsForTechnician', function () {
-    if (session_status() == PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
-    $technicianId = $_SESSION['user_id']; // Assuming technician is logged in and ID is in session
+    if (!isset($_SESSION['user_id'])) {
+        error_log("Unauthorized access: No user ID in session.");
+        http_response_code(401);
+        echo json_encode(["error" => "Unauthorized access. Please log in."]);
+        exit();
+    }
+
+    $technicianId = $_SESSION['user_id'];
     $date = $_GET['date'] ?? null;
 
     if (!$date) {
-        echo json_encode(["error" => "Date is required."]);
+        error_log("Error: Missing date parameter.");
         http_response_code(400);
+        echo json_encode(["error" => "Date is required."]);
         exit();
     }
 
     try {
+        error_log("Fetching appointments for Technician ID: $technicianId, Date: $date");
+
         $technicianController = new TechnicianController();
         $appointments = $technicianController->getAppointmentsByDate($technicianId, $date);
 
-        echo json_encode($appointments);
+        if (empty($appointments)) {
+            error_log("No appointments found for Technician ID: $technicianId, Date: $date");
+            http_response_code(200);
+            echo json_encode(["message" => "No appointments found for the selected date."]);
+        } else {
+            error_log("Fetched Appointments: " . json_encode($appointments));
+            echo json_encode($appointments);
+        }
     } catch (Exception $e) {
+        error_log("Error fetching appointments: " . $e->getMessage());
         http_response_code(500);
-        echo json_encode(["error" => $e->getMessage()]);
+        echo json_encode(["error" => "An error occurred while fetching appointments."]);
     }
     exit();
-});
+}, ["GET"]);
+
+
+
+
+
+
+
 
 Route::add('/SetAvailability', function () {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
