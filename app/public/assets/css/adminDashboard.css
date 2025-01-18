@@ -12,6 +12,7 @@ body {
   align-items: center;
   padding: 15px 30px;
   background-color: #ffc107;
+  flex-wrap: wrap; /* Ensures proper wrapping for smaller viewports */
 }
 
 .logo {
@@ -36,10 +37,13 @@ body {
 .admin-panels {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap; /* Enables wrapping for smaller viewports */
 }
 
 .admin-panel {
   flex: 1;
+  min-width: 300px; /* Ensure panels shrink to a manageable size */
+  max-width: 100%; /* Prevent overflow */
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
@@ -83,4 +87,100 @@ th {
   background: white;
   padding: 20px;
   border-radius: 8px;
+}
+
+/* Responsive Styling */
+
+/* Smartphones */
+@media (max-width: 600px) {
+  .navigationBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .logoutButton {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    margin-top: 10px;
+  }
+
+  .admin-panels {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .admin-panel {
+    min-width: 100%;
+  }
+
+  th,
+  td {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+}
+
+/* Tablets */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .navigationBar {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    font-size: 1.3rem;
+  }
+
+  .logoutButton {
+    font-size: 1rem;
+    padding: 8px 15px;
+  }
+
+  .admin-panels {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .admin-panel {
+    flex: 1;
+    min-width: 45%; /* Allow two panels per row */
+  }
+}
+
+/* Laptops */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .admin-container {
+    padding: 30px;
+  }
+
+  .admin-panel {
+    min-width: 30%; /* Allow three panels per row */
+  }
+
+  th,
+  td {
+    font-size: 1rem;
+    padding: 10px;
+  }
+}
+
+/* Desktop and larger screens */
+@media (min-width: 1441px) {
+  .admin-container {
+    padding: 40px;
+  }
+
+  .admin-panel {
+    min-width: 25%; /* Allow four panels per row */
+  }
+
+  th,
+  td {
+    font-size: 1.1rem;
+    padding: 12px;
+  }
 }

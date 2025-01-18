@@ -5,7 +5,7 @@ Route::add('/homePage' ,function(){
     requireLogin(); // Ensure user is logged in
 
     if ($_SESSION['role'] !== 'customer') {
-        header("Location: /Unauthorized");
+        header("Location: /LoginPage");
         exit();
     }
 

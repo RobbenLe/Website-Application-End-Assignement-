@@ -2,13 +2,18 @@
 require_once(__DIR__ . "/../controllers/ServiceController.php");
 require_once(__DIR__ . "/../controllers/UserController.php");
 require_once(__DIR__ . "/../controllers/AppointmentController.php");
-
-// ✅ Start session safely
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once(__DIR__ . "/../lib/SessionHelper.php");
 
 Route::add('/AdminDashBoardPage', function () {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (!isset($_SESSION['is_logged_in']) || $_SESSION['role'] !== 'technician') {
+        header("Location: /LoginPage");
+        exit();
+    }
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userController = new UserController(); // Ensure this is instantiated correctly
 
