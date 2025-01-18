@@ -26,6 +26,7 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  text-decoration-line: none;
 }
 
 .admin-container {

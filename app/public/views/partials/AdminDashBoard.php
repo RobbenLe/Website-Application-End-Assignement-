@@ -20,7 +20,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <section class="navigationBar">
     <h1 class="logo">Admin Dashboard</h1>
     <nav class="nav">
-      <a href="/LoginPage" class="logoutButton">Logout</a>
+      <a href="/LoginPage" class="logoutButton">Log Out</a>
     </nav>
   </section>
 
@@ -71,7 +71,6 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- Manage Appointments -->
     <section class="admin-panel">
         <h3>Manage Appointments</h3>
-        <button onclick="showAppointmentForm()">Add Appointment</button>
         <table>
             <thead>
                 <tr>
@@ -80,7 +79,6 @@ if (session_status() === PHP_SESSION_NONE) {
                     <th>Technician Name</th>
                     <th>Date</th>
                     <th>Time</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="appointment-table">

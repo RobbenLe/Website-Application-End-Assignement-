@@ -96,10 +96,6 @@ function populateAppointmentTable(appointments) {
             <td>${appt.technician_name}</td>
             <td>${appt.appointment_date}</td>
             <td>${appt.appointment_start_time} - ${appt.appointment_end_time}</td>
-            <td>
-              <button onclick="editAppointment(${appt.appointment_id})">Edit</button>
-              <button onclick="deleteAppointment(${appt.appointment_id})">Delete</button>
-            </td>
           </tr>
         `
     )
