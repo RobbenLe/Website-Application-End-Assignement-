@@ -9,7 +9,7 @@ Route::add('/AdminDashBoardPage', function () {
         session_start();
     }
 
-    if (!isset($_SESSION['is_logged_in']) || $_SESSION['role'] !== 'technician') {
+    if (!isset($_SESSION['is_logged_in']) || $_SESSION['role'] !== 'admin') {
         header("Location: /LoginPage");
         exit();
     }
@@ -114,7 +114,7 @@ Route::add('/api/updateTechnician', function () {
 
 
 
-// ✅ Route to Delete a Technician
+// Route to Delete a Technician
 Route::add('/api/deleteTechnician', function () {
     header('Content-Type: application/json');
     $data = json_decode(file_get_contents('php://input'), true);
@@ -136,7 +136,7 @@ Route::add('/api/deleteTechnician', function () {
 
 
 
-// ✅ Consolidated Route to Fetch All Admin Dashboard Data
+//Consolidated Route to Fetch All Admin Dashboard Data
 Route::add('/api/getAdminDashboardData', function () {
     header('Content-Type: application/json');
 
@@ -157,7 +157,7 @@ Route::add('/api/getAdminDashboardData', function () {
 });
 
 
-// ✅ Route to Fetch All Technicians
+//Route to Fetch All Technicians
 Route::add('/api/getTechnicians', function () {
     header('Content-Type: application/json');
     $userController = new UserController();
@@ -170,7 +170,7 @@ Route::add('/api/getTechnicians', function () {
     }
 });
 
-// ✅ Service Management Routes
+//Service Management Routes
 Route::add('/api/addService', function () {
     header('Content-Type: application/json');
     $serviceController = new ServiceController();

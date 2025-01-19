@@ -3,8 +3,19 @@
 <?php
 // Ensure session is started
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
+
+// Check if the user is logged in
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+  header("Location: /LoginPage");
+  exit();
+}
+
+// Access session variables
+$username = $_SESSION['username'];
+$role = $_SESSION['role'];
+$userId = $_SESSION['user_id'];
 ?>
 
 <!DOCTYPE html>
