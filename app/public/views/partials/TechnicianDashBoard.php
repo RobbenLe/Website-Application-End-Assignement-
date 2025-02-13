@@ -27,11 +27,10 @@ $userId = $_SESSION['user_id'];
 </head>
 <body>
     <!-- Navigation Bar -->
-  <section class="navigationBar">
-    <h1 class="logo">Rosa Nails & Spa</h1>
+    <section class="navigationBar">
+    <h1 class="logo">Technician Dashboard</h1>
     <nav class="nav">
-      <span>Welcome, <?php echo htmlspecialchars($username); ?> (<?php echo htmlspecialchars($role); ?>)</span>
-      <a type="button" class="loginButton" href="/LoginPage">Log Out</a>
+      <a href="/LoginPage" class="loginButton">Log Out</a>
     </nav>
   </section>
 

@@ -152,7 +152,7 @@ function loadSuggestedTimeSlots() {
     .catch((error) => {
       console.error("Failed to fetch slots:", error.message);
       const slotsContainer = document.getElementById("time-slots");
-      slotsContainer.innerHTML = `<p>Error loading slots: ${error.message}</p>`;
+      slotsContainer.innerHTML = `<p>The Availibility Of Technician Was Not Set</p>`;
     });
 }
 

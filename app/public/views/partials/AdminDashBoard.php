@@ -25,6 +25,7 @@ $userId = $_SESSION['user_id'];
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Rosa Nails & Spa</title>
   <link rel="stylesheet" href="../../assets/css/adminDashboard.css">
+  
 </head>
 <body>
   <!-- Navigation Bar -->

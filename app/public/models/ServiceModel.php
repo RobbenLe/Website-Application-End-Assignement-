@@ -15,7 +15,7 @@ class ServiceModel extends BaseModel
     public function getAllServicesGroupedByCategory() 
 {
     $query = "SELECT 
-                id,
+                id, 
                 name, 
                 price, 
                 duration, 

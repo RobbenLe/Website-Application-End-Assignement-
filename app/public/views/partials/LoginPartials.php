@@ -23,7 +23,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="error-message">
                 <?php 
                     echo htmlspecialchars($_SESSION['login_error']); 
-                    unset($_SESSION['login_error']); // Clear the error after displaying it
+                    unset($_SESSION['login_error']); //Clear the error after displaying it
                 ?>
             </div>
         <?php endif; ?>

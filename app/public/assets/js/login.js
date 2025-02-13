@@ -25,7 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({ username, password }),
         });
 
-        const result = await response.json();
+        // Read response as text first (to debug issues)
+        const textResponse = await response.text();
+        console.log("Raw Response:", textResponse);
+
+        // Convert response to JSON
+        const result = JSON.parse(textResponse);
 
         if (response.ok && result.success) {
           // Save user info in sessionStorage
@@ -49,11 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
               break;
           }
         } else {
-          throw new Error(result.error || "Failed to login. Please try again.");
+          // Display specific error message from the server
+          alert(result.error || "Failed to login. Please try again.");
         }
       } catch (error) {
         console.error("Login error:", error);
-        alert(`Login failed: ${error.message}`);
+        alert(`Login failed. Please try again.`);
       }
     });
   }
