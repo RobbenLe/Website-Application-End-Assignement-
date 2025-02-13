@@ -42,7 +42,7 @@ class ServiceModel extends BaseModel
     public function getServicesByCategory($category) 
     {
         $query = "SELECT 
-                    id, 
+                    id,
                     name AS service_name, 
                     category, 
                     price, 
