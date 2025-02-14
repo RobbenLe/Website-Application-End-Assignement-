@@ -87,41 +87,49 @@ body {
   background-color: #c2185b; /* Slightly darker yellow */
 }
 
-/* Introduction Section (same as body background) */
+/* Introduction Section */
 .intro {
   max-width: 900px;
-  margin: 0px auto;
-  padding: 100px 500px;
-  background-color: #ffffff; /* Match overall page background */
-  border-color: #333;
-  border-style: solid;
+  margin: 50px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border: 2px solid #333;
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Styling for the heading */
 .introSection {
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .intro h2 {
-  font-size: 5rem;
+  font-size: 2.5rem;
   font-style: italic;
-  text-align: center;
   color: #333;
-  font-family: didot-w01-italic, didot-w05-italic, serif;
+  margin-bottom: 10px;
 }
 
 .intro h3 {
-  font-size: 1rem;
-  margin-bottom: 30px;
-  text-align: center;
+  font-size: 1.5rem;
   color: #e4317b;
+  margin-bottom: 20px;
 }
 
+/* Paragraph Text */
 .intro p {
-  line-height: 1.6;
+  max-width: 800px;
+  font-size: 1.2rem;
   color: #555;
-  font-size: 20px;
-  line-height: 1.5em;
+  line-height: 1.6;
   text-align: center;
+  padding: 10px 20px;
+  word-wrap: break-word;
 }
 
 /* Gallery/Services Section: slightly lighter than the nav bar,

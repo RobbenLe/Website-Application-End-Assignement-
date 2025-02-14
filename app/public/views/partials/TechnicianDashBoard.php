@@ -14,7 +14,6 @@ if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
 $username = $_SESSION['username'];
 $role = $_SESSION['role'];
 $userId = $_SESSION['user_id'];
-
 ?>
 
 <!DOCTYPE html>
@@ -24,15 +23,20 @@ $userId = $_SESSION['user_id'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Technician Dashboard</title>
     <link rel="stylesheet" href="../../assets/css/technicianDashboard.css">
+
+    <!-- Include jQuery UI for multi-date picker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 </head>
 <body>
     <!-- Navigation Bar -->
     <section class="navigationBar">
-    <h1 class="logo">Technician Dashboard</h1>
-    <nav class="nav">
-      <a href="/LoginPage" class="loginButton">Log Out</a>
-    </nav>
-  </section>
+        <h1 class="logo">Technician Dashboard</h1>
+        <nav class="nav">
+            <a href="/LoginPage" class="loginButton">Log Out</a>
+        </nav>
+    </section>
 
     <div class="dashboard-container">
         <header>
@@ -51,12 +55,6 @@ $userId = $_SESSION['user_id'];
             </div>
         <?php endif; ?>
 
-        <!-- Date Picker Section -->
-        <section class="date-picker-section">
-            <label for="appointment-date"><strong>Select Date:</strong></label>
-            <input type="date" id="appointment-date" name="appointment_date">
-        </section>
-
         <!-- Appointments Section -->
         <section class="appointments-section">
             <h2>Appointments for Selected Date</h2>
@@ -68,19 +66,19 @@ $userId = $_SESSION['user_id'];
         <!-- Manage Availability Section -->
         <section class="availability-section">
             <h2>Manage Availability</h2>
-            <form action="/SetAvailability" method="POST">
+            <form id="availability-form">
                 <div class="input-group">
-                    <label for="available-date">Available Date</label>
-                    <input type="date" id="available-date" name="available_date" required>
+                    <label for="available-dates">Select Available Dates</label>
+                    <input type="text" id="available-dates" name="available_dates" placeholder="Pick multiple dates" required readonly>
                 </div>
 
                 <div class="input-group">
-                    <label for="start-time">Start Time (HH:MM:SS)</label>
+                    <label for="start-time">Start Time</label>
                     <input type="time" id="start-time" name="start_time" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="end-time">End Time (HH:MM:SS)</label>
+                    <label for="end-time">End Time</label>
                     <input type="time" id="end-time" name="end_time" required>
                 </div>
 
@@ -88,6 +86,7 @@ $userId = $_SESSION['user_id'];
             </form>
         </section>
     </div>
+
     <script src="../../assets/js/technicianDashboard.js"></script>
 </body>
 </html>

@@ -73,53 +73,57 @@ Route::add('/getAppointmentsForTechnician', function () {
 
 
 
-
-
-
-
 Route::add('/SetAvailability', function () {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        header('Content-Type: application/json');
+
         try {
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
 
-            // Get input values
-            $availableDate = $_POST['available_date'] ?? null;
-            $startTime = $_POST['start_time'] ?? null;
-            $endTime = $_POST['end_time'] ?? null;
+            // Get input from JSON
+            $data = json_decode(file_get_contents("php://input"), true);
+            $availableDates = $data['available_dates'] ?? [];
+            $startTime = $data['start_time'] ?? null;
+            $endTime = $data['end_time'] ?? null;
             $technicianId = $_SESSION['user_id'] ?? null;
 
             // Validate input
             if (!$technicianId) {
                 throw new Exception("Technician is not logged in.");
             }
-            if (empty($availableDate) || empty($startTime) || empty($endTime)) {
+            if (empty($availableDates) || empty($startTime) || empty($endTime)) {
                 throw new Exception("All fields are required.");
             }
 
-            // Save availability
+            // Save availability for multiple dates
             $technicianController = new TechnicianController();
-            $success = $technicianController->setAvailability($technicianId, $availableDate, $startTime, $endTime);
+            $failedDates = [];
 
-            if ($success) {
-                $_SESSION['success_message'] = "Availability set successfully!";
-            } else {
-                throw new Exception("Failed to set availability.");
+            foreach ($availableDates as $date) {
+                $success = $technicianController->setAvailability($technicianId, $date, $startTime, $endTime);
+                if (!$success) {
+                    $failedDates[] = $date;
+                }
             }
 
-            // Redirect to the dashboard with a success message
-            header("Location: /TechnicianDashBoardPage");
+            // Prepare response message
+            if (count($failedDates) > 0) {
+                echo json_encode(["success" => false, "error" => "Failed to set availability for: " . implode(", ", $failedDates)]);
+                http_response_code(400);
+            } else {
+                echo json_encode(["success" => true, "message" => "Availability set successfully!"]);
+            }
             exit();
         } catch (Exception $e) {
-            // Store the error message and reload the form
-            $_SESSION['error_message'] = $e->getMessage();
-            header("Location: /TechnicianDashBoardPage");
+            echo json_encode(["success" => false, "error" => $e->getMessage()]);
+            http_response_code(400);
             exit();
         }
     }
 
-    // Load the form
+    // Load the Technician Dashboard page
     require_once(__DIR__ . "/../views/pages/TechnicianDashBoardPage.php");
 }, ["get", "post"]);
 

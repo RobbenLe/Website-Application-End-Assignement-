@@ -89,39 +89,47 @@ body {
 
 /* Introduction Section (same as body background) */
 .intro {
-  max-width: 900px;
-  margin: 0px auto;
-  padding: 100px 500px;
-  background-color: #ffffff; /* Match overall page background */
-  border-color: #333;
-  border-style: solid;
+  max-width: 900px; /* Restricts max width for better readability */
+  margin: 50px auto; /* Centers the section */
+  padding: 40px;
+  background-color: #ffffff; /* White background */
+  border: 2px solid #333;
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Heading Styling */
 .introSection {
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .intro h2 {
-  font-size: 5rem;
+  font-size: 3rem;
   font-style: italic;
-  text-align: center;
   color: #333;
-  font-family: didot-w01-italic, didot-w05-italic, serif;
+  margin-bottom: 10px;
 }
 
 .intro h3 {
-  font-size: 1rem;
-  margin-bottom: 30px;
-  text-align: center;
+  font-size: 1.5rem;
   color: #e4317b;
+  margin-bottom: 20px;
 }
 
+/* Paragraph Text - Fixes the Line Break Issue */
 .intro p {
-  line-height: 1.6;
+  max-width: 800px; /* Prevents the paragraph from stretching too wide */
+  font-size: 1.2rem;
   color: #555;
-  font-size: 20px;
-  line-height: 1.5em;
+  line-height: 1.6;
   text-align: center;
+  padding: 10px 20px;
+  word-wrap: break-word; /* Prevents text from breaking randomly */
 }
 
 /* Gallery/Services Section: slightly lighter than the nav bar,

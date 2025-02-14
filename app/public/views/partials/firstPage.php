@@ -32,14 +32,17 @@
 
   <!-- Introduction Section -->
   <section class="intro">
-    <section class="introSection">
-     <h2>About Us</h2>
-     <h3>LET YOUR NAILS SHINE</h3>
-    </section>
-    <p>
-    Rosa Nails & Spa is located in Amsterdam Bos & Lommer. We specialize in taking care of your nails. From a manicure to nail art for a special occasion. Our nail stylists are ready to provide you with advice on a suitable treatment.
-    </p>
-  </section>
+  <div class="introSection">
+    <h2>About Us</h2>
+    <h3>LET YOUR NAILS SHINE</h3>
+  </div>
+  <p>
+    Rosa Nails & Spa is located in Amsterdam Bos & Lommer. 
+    We specialize in taking care of your nails. From a manicure 
+    to nail art for a special occasion. Our nail stylists are ready 
+    to provide you with advice on a suitable treatment.
+  </p>
+</section>
 
   <!-- Services/Picture Gallery -->
   <section class="gallery">
