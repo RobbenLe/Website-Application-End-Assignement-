@@ -30,10 +30,10 @@ function populateTechnicianTable(technicians) {
             <td>${tech.technician_name}</td>
             <td>${tech.email}</td>
             <td>
-              <button onclick='openEditTechnicianModal(${JSON.stringify(
+              <button class="edit-btn" onclick='openEditTechnicianModal(${JSON.stringify(
                 tech
               )})'>Edit</button>
-               <button onclick='deleteTechnician(${
+               <button class="delete-btn" onclick='deleteTechnician(${
                  tech.technician_id
                })'>Delete</button>
             </td>
@@ -71,8 +71,8 @@ function populateServiceTable(groupedServices) {
             <td>${service.price}</td>
             <td>${service.duration}</td>
             <td>
-              <button onclick="editService(${service.id}, '${service.name}', '${service.category}', ${service.price}, '${service.duration}')">Edit</button>
-              <button onclick="deleteService(${service.id})">Delete</button> <!-- Ensure service.id is passed -->
+              <button class="edit-btn" onclick="editService(${service.id}, '${service.name}', '${service.category}', ${service.price}, '${service.duration}')">Edit</button>
+              <button class="delete-btn" onclick="deleteService(${service.id})">Delete</button> <!-- Ensure service.id is passed -->
             </td>
           </tr>
         `;
@@ -102,7 +102,7 @@ function populateAppointmentTable(appointments) {
     .join("");
 }
 
-//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////Create Technician
 
 function showTechnicianForm() {
   document.getElementById("technician-modal").style.display = "flex";
@@ -140,6 +140,23 @@ document
       console.error("Error:", error);
     }
   });
+
+// Show the technician modal
+function showTechnicianForm() {
+  document.getElementById("technician-modal").style.display = "flex";
+  document.querySelector(".modal-overlay").classList.add("show"); // Show overlay
+}
+
+// Close the technician modal
+function closeTechnicianForm() {
+  document.getElementById("technician-modal").style.display = "none";
+  document.querySelector(".modal-overlay").classList.remove("show"); // Hide overlay
+}
+
+// Add event listener for the cancel button
+document
+  .getElementById("cancelTechnicianBtn")
+  .addEventListener("click", closeTechnicianForm);
 
 ///////////////////////////////////////////// Edit Technician
 

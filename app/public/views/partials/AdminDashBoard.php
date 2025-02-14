@@ -25,7 +25,6 @@ $userId = $_SESSION['user_id'];
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Rosa Nails & Spa</title>
   <link rel="stylesheet" href="../../assets/css/adminDashboard.css">
-  
 </head>
 <body>
   <!-- Navigation Bar -->
@@ -43,7 +42,7 @@ $userId = $_SESSION['user_id'];
     <!-- Manage Technicians -->
     <section class="admin-panel">
         <h3>Manage Technicians</h3>
-        <button onclick="showTechnicianForm()">Add Technician</button>
+        <button class="add-btn" onclick="showTechnicianForm()">Add Technician</button>
         <table>
             <thead>
                 <tr>
@@ -62,7 +61,7 @@ $userId = $_SESSION['user_id'];
     <!-- Manage Services -->
     <section class="admin-panel">
         <h3>Manage Services</h3>
-        <button onclick="openAddServiceModal()">Add Service</button>
+        <button class="add-btn" onclick="openAddServiceModal()">Add Service</button>
         <table>
             <thead>
                 <tr>
@@ -104,16 +103,25 @@ $userId = $_SESSION['user_id'];
   </div>
 
   <!-- Modals -->
-  <div id="technician-modal" class="modal">
+ <!-- Create Technician Modal -->
+<div id="technician-modal" class="modal">
   <form id="technician-form" action="/api/createTechnician" method="POST">
     <h3>Create Technician</h3>
+    
     <input type="text" name="tech-username" id="tech-name" placeholder="Name" required>
     <input type="email" name="tech-email" id="tech-email" placeholder="Email" required>
     <input type="password" name="tech-password" id="tech-password" placeholder="Password" required>
+    
     <input type="hidden" name="form-type" value="create-technician">
-    <button type="submit">Save</button>
+
+    <!-- Button Container -->
+    <div class="modal-buttons">
+      <button type="submit">Save</button>
+      <button type="button" id="cancelTechnicianBtn">Cancel</button>
+    </div>
   </form>
 </div>
+
 
 <div id="service-modal" class="modal">
   <form id="service-form" action="/AdminDashBoardPage" method="POST">
