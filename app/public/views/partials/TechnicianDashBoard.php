@@ -56,12 +56,23 @@ $userId = $_SESSION['user_id'];
         <?php endif; ?>
 
         <!-- Appointments Section -->
-        <section class="appointments-section">
-            <h2>Appointments for Selected Date</h2>
-            <ul id="appointment-list">
-                <li>Loading appointments...</li>
-            </ul>
-        </section>
+<section class="appointments-section">
+    <h2>Appointments for Selected Date</h2>
+
+    <!-- Date Picker to Select Date -->
+    <div class="date-picker-container" style="margin-bottom: 15px;">
+        <label for="appointment-date" style="font-weight: bold;">Select Date:</label>
+        <input type="date" id="appointment-date" name="appointment-date" 
+               min="<?php echo date('Y-m-d'); ?>" 
+               onchange="loadAppointmentsByDate()"
+               style="padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <!-- Appointment List -->
+    <ul id="appointment-list">
+        <li>Loading appointments...</li>
+    </ul>
+</section>
 
         <!-- Manage Availability Section -->
         <section class="availability-section">
