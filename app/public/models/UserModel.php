@@ -191,5 +191,31 @@ public function deleteUser($userId) {
     return $statement->rowCount();
 }
 
+public function getAppointmentsByCustomerId($customerId) {
+    $sql = "
+        SELECT 
+            a.id AS appointment_id,
+            a.appointment_date,
+            a.appointment_start_time AS start_time,
+            a.appointment_end_time AS end_time,
+            s.name AS service_name,
+            s.price AS service_price,
+            nt.username AS technician_name
+        FROM appointments a
+        INNER JOIN appointment_services aps ON a.id = aps.appointment_id
+        INNER JOIN services s ON aps.service_id = s.id
+        INNER JOIN users nt ON a.technician_id = nt.id
+        WHERE a.customer_id = :customerId
+        ORDER BY a.appointment_date DESC, a.appointment_start_time ASC 
+        LIMIT 0, 25;
+    ";
+
+    $stmt = self::$pdo->prepare($sql);
+    $stmt->bindParam(':customerId', $customerId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 }

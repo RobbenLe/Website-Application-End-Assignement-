@@ -183,4 +183,40 @@ public function deleteTechnician($userId) {
     }
 }
 
+// Fetch All Appointments for Logged-in Customer
+// Fetch All Appointments for Logged-in Customer
+public function getAppointments()
+{
+    // Check if the session is already started
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Check if the user is logged in
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: /LoginPage");
+        exit();
+    }
+
+    $userId = $_SESSION['user_id'];
+    try {
+        // Call the new method in UserModel to fetch appointments
+        $appointments = $this->userModel->getAppointmentsByCustomerId($userId);
+
+        if (empty($appointments)) {
+            // Return a message if no appointments are found
+            return ["success" => true, "message" => "No appointments found.", "appointments" => []];
+        }
+
+        // Return the appointments with a success status
+        return ["success" => true, "appointments" => $appointments];
+
+    } catch (Exception $e) {
+        error_log("❌ Error fetching appointments: " . $e->getMessage());
+        // Return an error message instead of an empty array
+        return ["success" => false, "message" => "Error fetching appointments. Please try again later."];
+    }
+}
+
+
 }

@@ -8,6 +8,13 @@
          onmouseout="this.style.color='#333'; this.style.backgroundColor='transparent'; this.style.borderRadius='0px';">
           Home Page
         </a>
+        <a class="nav-item nav-link active" href="/userAppointment" 
+           style="color: #333; text-decoration: none; padding: 8px 15px; 
+          transition: all 0.3s ease-in-out;"
+          onmouseover="this.style.color='white'; this.style.backgroundColor='#e91e63'; this.style.borderRadius='5px';"
+         onmouseout="this.style.color='#333'; this.style.backgroundColor='transparent'; this.style.borderRadius='0px';">
+          Your Appointment
+        </a>
         <div>
             <a type="button" class="btn btn-primary" style="background-color: #e91e63; border-color: #e91e63;" href="/LoginPage">Log Out</a>
         </div>
