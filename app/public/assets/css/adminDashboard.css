@@ -218,6 +218,17 @@ button {
   background-color: #c2185b; /* Darker Shade */
 }
 
+/* Custom style for the Update button */
+.btn-custom {
+  background-color: #28a745; /* Green */
+  color: white;
+  border: none;
+}
+
+.btn-custom:hover {
+  background-color: #218838; /* Darker green on hover */
+  color: white;
+}
 /* --- Responsive Fixes --- */
 @media (max-width: 768px) {
   .admin-panel {

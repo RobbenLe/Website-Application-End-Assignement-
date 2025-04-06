@@ -294,6 +294,26 @@ Route::add('/api/updateService', function () {
 }, ['post']);
 
 
+Route::add('/updateAppointmentStatus', function() {
+    // Ensure the user is logged in and is an admin
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+        header("Location: /LoginPage");
+        exit();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['appointment_id']) && isset($_POST['status'])) {
+        $appointmentId = $_POST['appointment_id'];
+        $newStatus = $_POST['status'];
+
+        $appointmentController = new AppointmentController();
+        $result = $appointmentController->updateStatus($appointmentId, $newStatus);
+
+        echo json_encode($result);
+        exit();
+    }
+}, 'post');
+
+
 
 
 

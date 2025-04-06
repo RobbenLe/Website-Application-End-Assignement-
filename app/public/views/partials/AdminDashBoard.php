@@ -81,22 +81,22 @@ $userId = $_SESSION['user_id'];
 
     <!-- Manage Appointments -->
     <section class="admin-panel">
-        <h3>Manage Appointments</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Customer Name</th>
-                    <th>Technician Name</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                </tr>
-            </thead>
-            <tbody id="appointment-table">
-                <!-- Populated by JS -->
-            </tbody>
-        </table>
-    </section>
+    <h3>Manage Appointments</h3>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer Name</th>
+                <th>Technician Name</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="appointment-table">
+        </tbody>
+    </table>
 </section>
 
     </div>

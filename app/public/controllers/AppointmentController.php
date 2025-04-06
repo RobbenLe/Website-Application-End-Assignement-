@@ -150,6 +150,7 @@ public function getSuggestedTimeSlots($technicianId, $date, $duration) {
             throw new Exception("Failed to fetch appointments: " . $e->getMessage());
         }
     }
+    
 
     /**
      * Get available slots for a technician
@@ -157,6 +158,21 @@ public function getSuggestedTimeSlots($technicianId, $date, $duration) {
     public function getTechnicianAvailableSlots($technician_id, $date)
     {
         return $this->appointmentModel->getAvailableTimeSlotsByTechnician($technician_id, $date);
+    }
+
+
+        public function updateStatus($appointmentId, $newStatus)
+    {
+        try {
+            $result = $this->appointmentModel->updateAppointmentStatus($appointmentId, $newStatus);
+            if ($result) {
+                return ["success" => true, "message" => "Appointment status updated successfully."];
+            } else {
+                return ["success" => false, "message" => "Failed to update appointment status."];
+            }
+        } catch (Exception $e) {
+            throw new Exception("Failed to update appointment status: " . $e->getMessage());
+        }
     }
 
 

@@ -220,15 +220,19 @@ public function isTimeSlotAvailable($technicianId, $selectedDate, $startTime, $e
     /**
      * Update appointment status
      */
-    public function updateAppointmentStatus($appointment_id, $status) 
+        public function updateAppointmentStatus($appointmentId, $newStatus)
     {
-        $query = "UPDATE appointments SET appointment_status = :status WHERE id = :appointment_id";
+        $query = "
+            UPDATE appointments 
+            SET appointment_status = :newStatus 
+            WHERE id = :appointmentId
+        ";
+
         $stmt = self::$pdo->prepare($query);
-        $stmt->execute([
-            'status' => $status,
-            'appointment_id' => $appointment_id
-        ]);
-        return $stmt->rowCount();
+        $stmt->bindParam(':newStatus', $newStatus, PDO::PARAM_STR);
+        $stmt->bindParam(':appointmentId', $appointmentId, PDO::PARAM_INT);
+
+        return $stmt->execute();
     }
 
     /**

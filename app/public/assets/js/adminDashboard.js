@@ -81,25 +81,79 @@ function populateServiceTable(groupedServices) {
 }
 
 // Populate Appointment Table
+// Populate Appointment Table
 function populateAppointmentTable(appointments) {
   const appointmentTable = document.getElementById("appointment-table");
+
+  // Check if there are no appointments
   if (appointments.length === 0) {
-    appointmentTable.innerHTML = `<tr><td colspan="6">No appointments found</td></tr>`;
+    appointmentTable.innerHTML = `<tr><td colspan="7">No appointments found</td></tr>`;
     return;
   }
+
+  // Populate the table with the appointment data
   appointmentTable.innerHTML = appointments
     .map(
       (appt) => `
-          <tr>
-            <td>${appt.appointment_id}</td>
-            <td>${appt.customer_name}</td>
-            <td>${appt.technician_name}</td>
-            <td>${appt.appointment_date}</td>
-            <td>${appt.appointment_start_time} - ${appt.appointment_end_time}</td>
-          </tr>
-        `
+        <tr>
+          <td>${appt.appointment_id}</td>
+          <td>${appt.customer_name}</td>
+          <td>${appt.technician_name}</td>
+          <td>${appt.appointment_date}</td>
+          <td>${appt.appointment_start_time} - ${appt.appointment_end_time}</td>
+          <td id="status-${appt.appointment_id}">${appt.appointment_status}</td>
+          <td>
+            <!-- Status Dropdown for Admin to change appointment status -->
+            <select id="status-select-${appt.appointment_id}">
+              <option value="pending" ${
+                appt.appointment_status === "pending" ? "selected" : ""
+              }>Pending</option>
+              <option value="confirmed" ${
+                appt.appointment_status === "confirmed" ? "selected" : ""
+              }>Confirmed</option>
+              <option value="completed" ${
+                appt.appointment_status === "completed" ? "selected" : ""
+              }>Completed</option>
+              <option value="cancelled" ${
+                appt.appointment_status === "cancelled" ? "selected" : ""
+              }>Cancelled</option>
+            </select>
+            <button onclick="updateStatus(${
+              appt.appointment_id
+            })" class="btn btn-custom">Update</button>
+          </td>
+        </tr>
+      `
     )
     .join("");
+}
+
+// Function to update the status
+function updateStatus(appointmentId) {
+  const status = document.getElementById(
+    `status-select-${appointmentId}`
+  ).value;
+
+  // Send a request to the server to update the status
+  fetch("/updateAppointmentStatus", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `appointment_id=${appointmentId}&status=${status}`,
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      if (result.success) {
+        // Update the status on the front-end
+        document.getElementById(`status-${appointmentId}`).innerText = status;
+        alert(result.message);
+      } else {
+        alert(result.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Failed to update the status. Please try again.");
+    });
 }
 
 //////////////////////////////////////////////////////Create Technician
