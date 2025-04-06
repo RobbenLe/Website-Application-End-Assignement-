@@ -200,7 +200,8 @@ public function getAppointmentsByCustomerId($customerId) {
             a.appointment_end_time AS end_time,
             s.name AS service_name,
             s.price AS service_price,
-            nt.username AS technician_name
+            nt.username AS technician_name,
+            a.appointment_status
         FROM appointments a
         INNER JOIN appointment_services aps ON a.id = aps.appointment_id
         INNER JOIN services s ON aps.service_id = s.id
@@ -215,6 +216,19 @@ public function getAppointmentsByCustomerId($customerId) {
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function cancelAppointment($appointmentId) {
+    $sql = "
+        UPDATE appointments 
+        SET appointment_status = 'canceled' 
+        WHERE id = :appointmentId AND appointment_status = 'pending';
+    ";
+
+    $stmt = self::$pdo->prepare($sql);
+    $stmt->bindParam(':appointmentId', $appointmentId, PDO::PARAM_INT);
+
+    return $stmt->execute();
 }
 
 

@@ -218,5 +218,43 @@ public function getAppointments()
     }
 }
 
+public function cancelAppointment($appointmentId) {
+    // Check if the session is started
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Ensure the user is logged in
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: /LoginPage");
+        exit();
+    }
+
+    try {
+        // Call the model's cancelAppointment method
+        $cancelResult = $this->userModel->cancelAppointment($appointmentId);
+
+        if ($cancelResult) {
+            // Success message
+            $_SESSION['cancel_message'] = "Appointment canceled successfully.";
+        } else {
+            // Failure message
+            $_SESSION['cancel_message'] = "Failed to cancel the appointment.";
+        }
+        
+        // Fetch updated appointments
+        $appointments = $this->getAppointments();
+        
+        // Pass the appointments data to the UserAppointment view
+        require_once(__DIR__ . "/../views/pages/UserAppointment.php");
+    } catch (Exception $e) {
+        error_log("❌ Error canceling appointment: " . $e->getMessage());
+        $_SESSION['cancel_message'] = "Error canceling appointment. Please try again later.";
+        // Fetch updated appointments
+        $appointments = $this->getAppointments();
+        require_once(__DIR__ . "/../views/pages/UserAppointment.php");
+    }
+}
+
 
 }

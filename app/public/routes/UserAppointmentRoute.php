@@ -22,3 +22,32 @@ Route::add('/userAppointment', function() {
     // Pass the appointments data to the UserAppointment view
     require_once(__DIR__ . "/../views/pages/UserAppointment.php");
 }, 'get');
+
+Route::add('/cancelAppointment', function() {
+    // Ensure the user is logged in
+    requireLogin();
+
+    // Check if the user is a customer
+    if ($_SESSION['role'] !== 'customer') {
+        header("Location: /LoginPage");
+        exit();
+    }
+
+    // Get the appointment id from the POST data
+    if (isset($_POST['appointment_id'])) {
+        $appointmentId = $_POST['appointment_id'];
+        
+        // Create an instance of UserController
+        $userController = new UserController();
+        
+        // Call cancelAppointment method
+        $result = $userController->cancelAppointment($appointmentId);
+        
+        // Return success or failure message
+        $appointments = $userController->getAppointments(); // Refresh appointments
+        require_once(__DIR__ . "/../views/pages/UserAppointment.php");
+    } else {
+        header("Location: /userAppointment");
+        exit();
+    }
+}, 'post');
