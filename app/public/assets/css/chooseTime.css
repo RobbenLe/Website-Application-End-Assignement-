@@ -37,6 +37,7 @@ h3 {
 /* Technician Selection */
 .technician-selection {
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .technician-selection label {
@@ -265,6 +266,55 @@ h3 {
   font-weight: bold;
 }
 
+/* Treatment Card Styling */
+.treatment-card {
+  background-color: #fff7f3;
+  border: 1px solid #ffe3d9;
+  border-left: 4px solid #ff6f61;
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.treatment-card:hover {
+  transform: scale(1.01);
+}
+
+.treatment-name {
+  font-weight: 600;
+  color: #d94a35;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.treatment-meta {
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.remove-btn {
+  background-color: #ff6f61;
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.remove-btn:hover {
+  background-color: #e15d4e;
+}
+
+.remove-btn:focus {
+  outline: none;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   .choose-time-container {

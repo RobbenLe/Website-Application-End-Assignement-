@@ -194,14 +194,6 @@ function confirmAppointment() {
     document.getElementById("selected-service-ids").value || "[]"
   );
 
-  // Debugging logs
-  console.log("Customer ID:", customerId);
-  console.log("Technician ID:", technicianId);
-  console.log("Selected Date:", selectedDate);
-  console.log("Start Time:", startTime);
-  console.log("End Time:", endTime);
-  console.log("Service IDs:", serviceIds);
-
   // Validate inputs
   if (
     !customerId ||
@@ -239,19 +231,35 @@ function confirmAppointment() {
     })
     .then((data) => {
       if (data.success) {
-        alert(
-          `Appointment created successfully! Appointment ID: ${data.appointmentId}`
-        );
-        window.location.href = "/homePage";
+        // SweetAlert popup
+        Swal.fire({
+          title: "Success!",
+          text: `Appointment created successfully!`,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          // Check if the "OK" button was clicked
+          if (result.isConfirmed) {
+            window.location.href = "/userAppointment"; // Redirect to home page after success
+          }
+        });
       } else {
-        alert(`Error: ${data.error}`);
+        Swal.fire({
+          title: "Error!",
+          text: `Error: ${data.error}`,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     })
     .catch((error) => {
       console.error("Error:", error);
-      alert(
-        "An error occurred while creating the appointment. Please try again."
-      );
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred while creating the appointment. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     });
 }
 
@@ -295,12 +303,34 @@ document.addEventListener("DOMContentLoaded", function () {
   summaryDiv.innerHTML = ""; // Clear default message
 
   if (selectedTreatments.length > 0) {
-    selectedTreatments.forEach((treatment) => {
-      const treatmentInfo = document.createElement("p");
-      treatmentInfo.textContent = `${treatment.name || "Unknown Service"} - ${
-        treatment.duration || "00:00:00"
-      } min - €${treatment.price || "0.00"}`;
-      summaryDiv.appendChild(treatmentInfo);
+    selectedTreatments.forEach((treatment, index) => {
+      const treatmentCard = document.createElement("div");
+      treatmentCard.classList.add("treatment-card");
+
+      // Treatment Name
+      const treatmentName = document.createElement("p");
+      treatmentName.classList.add("treatment-name");
+      treatmentName.textContent = `${treatment.name || "Unknown Service"}`;
+
+      // Treatment Duration and Price
+      const treatmentMeta = document.createElement("p");
+      treatmentMeta.classList.add("treatment-meta");
+      treatmentMeta.innerHTML = `${treatment.duration || "00:00"} min - €${
+        treatment.price || "0.00"
+      }`;
+
+      // Remove Button
+      const removeButton = document.createElement("button");
+      removeButton.classList.add("remove-btn");
+      removeButton.textContent = "Remove";
+      removeButton.onclick = function () {
+        removeTreatment(index); // Call remove function
+      };
+
+      treatmentCard.appendChild(treatmentName);
+      treatmentCard.appendChild(treatmentMeta);
+      treatmentCard.appendChild(removeButton);
+      summaryDiv.appendChild(treatmentCard);
     });
   } else {
     summaryDiv.innerHTML =
@@ -316,3 +346,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   sessionStorage.setItem("serviceIds", JSON.stringify(serviceIds));
 });
+
+function removeTreatment(index) {
+  let selectedTreatments =
+    JSON.parse(sessionStorage.getItem("selectedTreatments")) || [];
+  selectedTreatments.splice(index, 1); // Remove treatment from array
+  sessionStorage.setItem(
+    "selectedTreatments",
+    JSON.stringify(selectedTreatments)
+  ); // Update session storage
+  location.reload(); // Reload the page to update the display
+}
