@@ -43,7 +43,7 @@ body {
 
 .admin-panels {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column; /* Changed to stack the panels vertically */
   gap: 20px;
   justify-content: center;
   width: 100%;
@@ -51,15 +51,14 @@ body {
 
 /* --- Individual Panels --- */
 .admin-panel {
-  flex: 1 1 400px;
-  max-width: 100%;
+  width: 100%; /* Set width to 100% to make the panels full-width */
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
   background: white;
   text-align: center;
-  min-width: 350px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 100%; /* Remove the flex property to avoid it being reduced in width */
 }
 
 /* --- Tables Styling --- */
