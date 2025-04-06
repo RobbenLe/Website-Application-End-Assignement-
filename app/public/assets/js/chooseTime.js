@@ -13,16 +13,6 @@ console.log("loadDates function is defined.");
 // Track selected date and technician
 let currentDate = new Date();
 
-// Display selected date in UI
-function displaySelectedDate() {
-  const selectedDateDisplay = document.getElementById("selected-date-display");
-  selectedDateDisplay.textContent = currentDate.toLocaleDateString("en-GB");
-  document.getElementById("selected-date").value = currentDate
-    .toISOString()
-    .split("T")[0];
-  loadAvailabilityByDate();
-}
-
 // Navigate Dates
 function navigateDay(offset) {
   currentDate.setDate(currentDate.getDate() + offset);
@@ -295,4 +285,34 @@ document.addEventListener("DOMContentLoaded", function () {
     summaryDiv.innerHTML =
       "<p>No treatments selected. Please go back and select treatments.</p>";
   }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const selectedTreatments =
+    JSON.parse(sessionStorage.getItem("selectedTreatments")) || [];
+  const summaryDiv = document.getElementById("selected-treatments");
+
+  summaryDiv.innerHTML = ""; // Clear default message
+
+  if (selectedTreatments.length > 0) {
+    selectedTreatments.forEach((treatment) => {
+      const treatmentInfo = document.createElement("p");
+      treatmentInfo.textContent = `${treatment.name || "Unknown Service"} - ${
+        treatment.duration || "00:00:00"
+      } min - €${treatment.price || "0.00"}`;
+      summaryDiv.appendChild(treatmentInfo);
+    });
+  } else {
+    summaryDiv.innerHTML =
+      "<p>No treatments selected. Please go back and select treatments.</p>";
+  }
+
+  // Extract and store service IDs explicitly
+  const serviceIds = selectedTreatments
+    .map((treatment) => treatment.id)
+    .filter((id) => id !== undefined && id !== null);
+
+  console.log("🛠️ Service IDs:", serviceIds);
+
+  sessionStorage.setItem("serviceIds", JSON.stringify(serviceIds));
 });

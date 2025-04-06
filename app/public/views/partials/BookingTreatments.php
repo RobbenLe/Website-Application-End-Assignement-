@@ -62,7 +62,7 @@ $userId = $_SESSION['user_id'];
         '<?php echo htmlspecialchars($service['duration']); ?>', 
         '<?php echo htmlspecialchars($service['price']); ?>'
     )">
-    Choose
+    Choose  
 </button>
         <?php endforeach; ?>
       </ul>

@@ -79,6 +79,32 @@ document.addEventListener("DOMContentLoaded", () => {
   appointmentDateInput.addEventListener("change", loadAppointments);
 });
 
+function loadAppointmentsByDate() {
+  const dateInput = document.getElementById("appointment-date");
+  const selectedDate = dateInput.value;
+  const appointmentList = document.getElementById("appointment-list");
+
+  if (!selectedDate) return;
+
+  fetch(`/api/getAppointments.php?date=${selectedDate}`)
+    .then((response) => response.json())
+    .then((data) => {
+      appointmentList.innerHTML = ""; // clear old data
+      if (data.length === 0) {
+        appointmentList.innerHTML = "<li>No appointments for this date.</li>";
+      } else {
+        data.forEach((appointment) => {
+          const li = document.createElement("li");
+          li.innerText = `Time: ${appointment.time}, Customer: ${appointment.customer}`;
+          appointmentList.appendChild(li);
+        });
+      }
+    })
+    .catch((error) => {
+      appointmentList.innerHTML = "<li>Error loading appointments.</li>";
+      console.error("Fetch error:", error);
+    });
+}
 ////////////////////////////////////////////// Pick Multiple Date
 $(document).ready(function () {
   let selectedDates = [];
