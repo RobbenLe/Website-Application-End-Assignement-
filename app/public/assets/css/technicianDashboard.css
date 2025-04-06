@@ -1,11 +1,11 @@
-/* technicianDashboard.css */
-
 /* Overall page background: soft yellow */
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #fffde7; /* Soft pastel yellow */
+  color: #333; /* Dark text for better readability */
+  line-height: 1.6;
 }
 
 /* Navigation Bar: slightly darker pastel yellow */
@@ -15,62 +15,84 @@ body {
   justify-content: space-between;
   background-color: #fff8c5; /* A tad deeper pastel yellow */
   padding: 15px 30px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background-color 0.3s ease;
 }
 
-.selected-date a {
-  background-color: #4caf50 !important;
-  color: white !important;
-  border-radius: 50%;
+.navigationBar:hover {
+  background-color: #fff3b0; /* Slight hover effect for navigation */
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: #333;
   margin: 0;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
 .nav .loginButton {
   background-color: #e91e63;
   color: #fff;
   border: none;
-  padding: 10px 18px;
+  padding: 12px 18px;
   border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
+
 .nav .loginButton:hover {
   background-color: #c2185b;
+  transform: scale(1.05);
 }
 
 header h1 {
   margin: 0;
   color: #333;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
 }
 
+/* Main Container */
 .dashboard-container {
   max-width: 800px;
   margin: 20px auto;
-  padding: 20px;
+  padding: 30px;
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
 
-/* Section Styles */
+.dashboard-container:hover {
+  transform: translateY(-5px);
+}
+
 section {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
+/* Section Headers */
 section h2 {
   margin-bottom: 15px;
   color: #444;
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
+/* Form Inputs */
 label {
   display: block;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 input[type="date"],
@@ -78,11 +100,26 @@ input[type="time"],
 button {
   display: block;
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 12px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Change color to green when a date is selected */
+input[type="date"]:valid {
+  background-color: #c8e6c9; /* Light green */
+  border-color: #4caf50;
+}
+
+input[type="date"]:focus,
+input[type="time"]:focus,
+button:focus {
+  outline: none;
+  border-color: #f8d46b;
+  box-shadow: 0 0 5px rgba(248, 212, 107, 0.8);
 }
 
 button {
@@ -92,10 +129,12 @@ button {
   cursor: pointer;
   font-weight: bold;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 button:hover {
   background-color: #f4c04d;
+  transform: scale(1.05);
 }
 
 /* Appointment List */
@@ -107,52 +146,25 @@ button:hover {
 
 #appointment-list li {
   background: #fdf6e3;
-  margin: 5px 0;
-  padding: 10px;
+  margin: 8px 0;
+  padding: 15px;
   border-radius: 5px;
   border: 1px solid #ddd;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 
-/* Form Section */
-form {
-  margin-top: 10px;
+#appointment-list li:hover {
+  background-color: #faf0c4;
 }
 
-/* Styles for the availability table */
-.availability-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 16px;
-  text-align: left;
-}
-
-.availability-table th,
-.availability-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-}
-
-.availability-table th {
-  background-color: #f8d46b; /* Yellow header */
-  color: #333;
-}
-
-.availability-table td input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-}
-/* Success and Error Messages */
 .message {
-  padding: 10px;
+  padding: 15px;
   margin: 15px 0;
   border-radius: 5px;
   font-size: 16px;
   text-align: center;
+  transition: transform 0.3s ease;
 }
 
 .message.success {
@@ -165,4 +177,101 @@ form {
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
+}
+
+.message:hover {
+  transform: scale(1.02);
+}
+
+/* Availability Form */
+form {
+  margin-top: 20px;
+}
+
+.availability-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 16px;
+  text-align: left;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.availability-table th,
+.availability-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+.availability-table th {
+  background-color: #f8d46b;
+  color: #333;
+}
+
+.availability-table td {
+  background-color: #fdf6e3;
+  color: #444;
+}
+
+.availability-table td input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.availability-table td input:focus {
+  outline: none;
+  border-color: #f8d46b;
+}
+
+/* Highlight available date */
+.selected-date {
+  background-color: #4caf50; /* Green */
+  color: white; /* White text for contrast */
+}
+
+.availability-table td {
+  text-align: center;
+  padding: 12px;
+  background-color: #fdf6e3; /* Light background */
+  border: 1px solid #ddd;
+}
+
+.availability-table td.selected-date {
+  background-color: #4caf50; /* Green for selected date */
+  color: white; /* White text when selected */
+}
+
+.availability-table td input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
+    margin: 10px;
+  }
+
+  section {
+    margin-bottom: 15px;
+  }
+
+  input[type="date"],
+  input[type="time"],
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  button {
+    font-size: 14px;
+  }
 }
