@@ -131,40 +131,44 @@ body {
 
 /* ===== Footer Popup for Selection ===== */
 .booking-footer {
-  display: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   background: #ffc107;
   color: #4c4c4c;
-  text-align: center;
-  padding: 10px;
+  padding: 12px 20px;
   font-size: 1rem;
-  font-weight: bold;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .booking-footer p {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
+  flex: 1;
 }
 
 .booking-footer .time-btn {
-  margin-top: 5px;
   background-color: #ffffff;
   color: #ffc107;
-  font-size: 0.9rem;
-  font-weight: 500;
-  border: 1px solid #ffd54f;
-  padding: 8px 15px;
-  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .booking-footer .time-btn:hover {
-  background-color: #ffe082;
+  background-color: #fff8e1;
 }
 
 /* ===== Responsive Design ===== */

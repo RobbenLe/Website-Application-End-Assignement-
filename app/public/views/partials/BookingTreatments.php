@@ -74,9 +74,9 @@ $userId = $_SESSION['user_id'];
 
   <!-- Footer Popup for Time Selection -->
   <footer class="booking-footer" id="booking-footer">
-    <p id="selected-treatment"></p>
-    <button class="time-btn"  onclick="window.location.href='/ChooseTimePage'">Choose Time</button>
-  </footer>
+  <p id="selected-treatment"></p>
+  <button class="time-btn" onclick="window.location.href='/ChooseTimePage'">Choose Time</button>
+</footer>
 
   <script src="../../assets/js/BookingTreatments.js"></script>
   <script src="../../assets/js/auth.js"></script>
